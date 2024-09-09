@@ -1,0 +1,95 @@
+:host ::ng-deep body .p-dialog-titlebar {
+    padding: 0;
+}
+
+:host ::ng-deep body .p-dialog .p-dialog-content {
+    padding: 0;
+}
+
+
+:host ::ng-deep .link-download {
+    font-size: 15px;
+    background: blue;
+}
+
+
+.list-recorditem-button {
+    margin: 0 !important;
+    position: relative;
+    right: -10px;
+}
+
+.list-recorditem-button,
+.list-recorditem-button li {
+    list-style: none;
+    display: inline-block;
+}
+
+.list-recorditem-button li {
+    padding-left: 7px;
+}
+
+.list-recorditem-button li:first-child {
+    top: -6px;
+    position: relative;
+
+}
+
+.header-buttons-right {
+    text-align: end;
+}
+
+.header-buttons-left {
+    padding-top: 12px;
+}
+
+.header-buttons-left a,
+.header-buttons-left a .pi,
+.header-buttons-left {
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.header-buttons-left a:hover {
+    color: #333
+}
+
+
+:host::ng-deep .p-datatable .p-datatable-footer,
+:host::ng-deep .p-datatable .p-datatable-header {
+    padding: 0;
+}
+
+.grid {
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+}
+
+.a-content{
+    float: right;
+}
+
+.header-buttons-left a::after{
+    content: " / ";
+}
+
+@media screen and (max-width: 600px) {
+
+    .list-recorditem-button,
+    .list-recorditem-button li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .list-recorditem-button li {
+        padding-right: 7px;
+    }
+
+    .header-buttons-right {
+        text-align: left;
+        padding: 0;
+    }
+}

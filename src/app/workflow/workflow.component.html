@@ -1,0 +1,15 @@
+<app-is-active-app-message [isActiveApp]="isWorkflowAppActive" [appName]="'Every Workflow'"></app-is-active-app-message>
+
+<div class="tasks" *ngIf="isWorkflowAppActive">
+  <div class="definition" [ngClass]="langDir=='rlt'?'definition-rtl':''">
+    <div class="card">
+      <app-every-workflow-definition (workflowTasks)="workflowTasksEvent($event)"></app-every-workflow-definition>
+    </div>
+  </div>
+
+  <div class="table">
+    <div class="card">
+      <app-tasks [taskStatus]="taskStatus"></app-tasks>
+    </div>
+  </div>
+</div>

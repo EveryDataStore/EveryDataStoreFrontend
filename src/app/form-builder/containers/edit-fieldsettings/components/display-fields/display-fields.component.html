@@ -1,0 +1,22 @@
+<div *ngIf="fieldItems.length > 0" style="display: flex; margin-bottom: 2px;">
+    <p-dropdown [options]="fieldItems"
+                [(ngModel)]="fieldIdSelected"
+                [appendTo]="'body'"
+                [ngStyle]="{'flex-grow': 1}"
+                [placeholder]="'choose' | translate" ></p-dropdown>
+
+    <p-button   [label]="'add-display-field' | translate"
+                [disabled]="fieldIdSelected === null"
+                [ngStyle]="{'margin-left': '5px'}"
+                [icon]="'fa fa-plus'"
+                (onClick)="onAddBtnClicked()"></p-button>
+</div>
+
+<div *ngFor="let fieldName of fieldItemsSelected.get(objectKey)" style="margin-bottom: 3px; margin-top: 3px;">
+    <p-button [icon]="'fa fa-minus'"
+              (onClick)="onRemoveBtnClicked(fieldName)"></p-button>
+
+    {{fieldName.label}}
+</div>
+
+

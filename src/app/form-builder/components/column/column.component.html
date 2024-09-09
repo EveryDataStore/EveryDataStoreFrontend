@@ -1,0 +1,147 @@
+<!-- container when in build mode, using drag n drop and sortable -->
+<ng-container *ngIf="inBuildMode">
+
+  <div [class.form-column-build]="true" [class.form-column]="true" [class.drag-started]="dragFieldStarted"
+       dnd-sortable-container
+       [dropZones]="['field']"
+       [sortableData]="column.Fields">
+    <div class="column-actionbar" [ngStyle]="langDir == 'rtl'?{'text-align': 'left'}:{'text-align': 'right'}">
+      <!-- delete column button -->
+      <button pButton icon="fa fa-trash" (click)="deleteColumnClicked()"
+              [pTooltip]="'delete-column' | translate"></button>
+    </div>
+
+
+    <div *ngFor="let field of column.Fields; let i = index" class="field-build" dnd-sortable [sortableIndex]="i"
+         (dndStart)="onDragStart()"
+         (mouseover)="mouseover()"
+         (mouseleave)="mouseleave()"
+         [dragEnabled]="isDrag"
+         (onDropSuccess)="onDropSuccess()" (onDragEnd)="onDragEnd()">
+
+      <div class="field-actionbar">
+        <!-- move field button -->
+        <button pButton dnd-draggable
+                [pTooltip]="'move-field' | translate" [ngStyle]="langDir == 'rtl'?{'float': 'right'}:{'float': 'left'}" [icon]="'fa fa-arrows-alt'"
+                class="p-button-secondary"></button>
+
+        <!-- delete field button -->
+        <div [ngStyle]="langDir == 'rtl'?{'float': 'left'}:{'float': 'right'}">
+          <button pButton [pTooltip]="'delete-field' | translate" class="field-action-button" [icon]="'fa fa-trash'"
+                  (click)="deleteFieldClicked(field)"></button>
+
+          <!-- edit field button -->
+          <button pButton [pTooltip]="'edit-field' | translate" class="field-action-button" [icon]="'pi pi-pencil'"
+                  (click)="editButtonClicked(field)"></button>
+        </div>
+      </div>
+      <div style="clear: both;"></div>
+
+      <!-- field outlet -->
+      <ng-container *ngTemplateOutlet="fieldTemplate;context:{'field': field}"></ng-container>
+    </div>
+  </div>
+</ng-container>
+
+<!-- container when in input mode, no drag n drop, no sorting -->
+<ng-container *ngIf="!inBuildMode">
+  <div class="form-column">
+    <div *ngFor="let field of column.Fields">
+      <ng-container *ngTemplateOutlet="fieldTemplate;context:{'field': field}"></ng-container>
+    </div>
+  </div>
+</ng-container>
+
+<!-- template for showing the field -->
+<ng-template #fieldTemplate let-field="field">
+  <div class="field" [class.hidden]="!inBuildMode && (field.type === fieldType.HiddenField)">
+    <ng-container *ngIf="field.label
+                && field.type !== fieldType.UploadField
+                && field.type !== fieldType.CheckboxField
+                && field.type !== fieldType.HiddenField
+                && !field.getSettingValueAsBoolean('hidden')
+                || inBuildMode">
+      <app-field-label [field]="field"></app-field-label>
+    </ng-container>
+
+    <ng-container [ngSwitch]="field.type">
+      <app-text-field   *ngSwitchCase="fieldType.TextField"
+                        [fieldCollectionService]="fieldCollectionService"
+                        [formMetaField]="field"
+                        [recordItemSlug]="recordItemSlug"
+                        [formMode]="formMode"></app-text-field>
+
+      <app-textarea-field *ngSwitchCase="fieldType.TextareaField"
+                          [fieldCollectionService]="fieldCollectionService"
+                          [formMetaField]="field"
+                          [recordItemSlug]="recordItemSlug"
+                          [formMode]="formMode"></app-textarea-field>
+
+      <app-texteditor-field *ngSwitchCase="fieldType.TexteditorField"
+                            [fieldCollectionService]="fieldCollectionService"
+                            [formMetaField]="field"
+                            [recordItemSlug]="recordItemSlug"
+                            [formMode]="formMode"></app-texteditor-field>
+
+      <app-dropdown-field *ngSwitchCase="fieldType.DropdownField"
+                          [fieldCollectionService]="fieldCollectionService"
+                          [formMetaField]="field"
+                          [recordItemSlug]="recordItemSlug"
+                          [formMode]="formMode"></app-dropdown-field>
+
+      <app-dropdown-select-field  *ngSwitchCase="fieldType.DropdownSelectField"
+                                  [fieldCollectionService]="fieldCollectionService"
+                                  [formMetaField]="field"
+                                  [recordItemSlug]="recordItemSlug"
+                                  [formMode]="formMode"></app-dropdown-select-field>
+
+      <app-checkbox-field *ngSwitchCase="fieldType.CheckboxField"
+                          [fieldCollectionService]="fieldCollectionService"
+                          [formMetaField]="field"
+                          [recordItemSlug]="recordItemSlug"
+                          [formMode]="formMode"></app-checkbox-field>
+
+      <app-hidden-field *ngSwitchCase="fieldType.HiddenField"
+                        [fieldCollectionService]="fieldCollectionService"
+                        [formMetaField]="field"
+                        [recordItemSlug]="recordItemSlug"
+                        [formMode]="formMode"></app-hidden-field>
+
+      <app-upload-field *ngSwitchCase="fieldType.UploadField"
+                        [fieldCollectionService]="fieldCollectionService"
+                        [formMetaField]="field"
+                        [recordItemSlug]="recordItemSlug"
+                        [formMode]="formMode"></app-upload-field>
+
+      <app-relation-field *ngSwitchCase="fieldType.RelationField"
+                          [fieldCollectionService]="fieldCollectionService"
+                          [formMetaField]="field"
+                          [recordItemSlug]="recordItemSlug"
+                          [formMode]="formMode"></app-relation-field>
+
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- droppable zone for the formtype -->
+<div style="height: 80px; border:2px dashed silver;" dnd-droppable [dropZones]="['field']"
+     [class.drag-started]="dragFieldtypeStarted" [class.drag-ended]="!dragFieldtypeStarted"
+     (onDropSuccess)="onFieldTypeDropped($event)">
+</div>
+
+<!-- edit field settings dialog -->
+<p-dialog *ngIf="editFieldsettingsDialogVisible" [(visible)]="editFieldsettingsDialogVisible" [closable]="true"
+          [style]="{'width': '800px'}"
+          [modal]="true" (onHide)="editFieldsettingsDialogVisible = false">
+
+  <p-header>{{'edit-field' | translate}}</p-header>
+
+  <app-edit-fieldsettings [field]="fieldToEdit" [formData]="formData" #editFieldsettingsComponent></app-edit-fieldsettings>
+  <p-footer>
+    <button pButton type="button" icon="fa fa-check" (click)="onSaveSettingsClicked()"
+            label="Ok" class="p-button-success"></button>
+
+    <button pButton type="button" icon="fa fa-times" [label]="'close' | translate"
+            (click)="editFieldsettingsDialogVisible=false" [ngStyle]="{'float': 'right'}" class="p-button-secondary"></button>
+  </p-footer>
+</p-dialog>

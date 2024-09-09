@@ -1,0 +1,31 @@
+<p-table>
+  <ng-template pTemplate="caption">
+    <div class="table-header">
+      <div class="grid">
+        <div class="col-12 md:col-g lg:col-6 header-buttons-left">
+          <a [ngClass]="langDir=='rlt'?'a-content':''" href="{{dashboardPath}}"><i
+            class="pi pi-home"></i> {{'dashboard' | translate}}</a> <a [ngClass]="langDir=='rlt'?'a-content':''"
+                                                                       (click)="onModelLinkClicked()">{{modelName}}</a>
+          <span class="object-slug"> {{objectSlug | slice:0:10}} ...</span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="summary">
+    <div *ngIf="formData">
+      <app-form-builder [formData]="formData"
+                        [formMode]="FormModeEnum.Use"
+                        [fieldCollectionService]="fieldCollectionService"
+                        (formBuilt)="onFormBuilt()"></app-form-builder>
+      <app-save-cancel-buttons [disabled]="!(permissions.canEdit || permissions.canCreate)"
+                               (save)="onSaveClicked($event)"
+                               (cancel)="onCancelClicked()"
+                               [showDeleteButton]="!isNewItem && permissions.canDelete"
+                               [showCopyButton]="!isNewItem"
+                               (delete)="onDeleteClicked()"
+      ></app-save-cancel-buttons>
+
+            <div id="tempDiv" (click)="addText()"></div>
+        </div>
+    </ng-template>
+</p-table>

@@ -1,0 +1,33 @@
+export interface Settings {
+    CurrentDataStoreName: string;
+    Email: string;
+    CurrentDataStoreFolderSlug: string;
+    Apps: any;
+    DateFormat: string;
+    DateTimeFormat: string;
+    FrontendUrl: string;
+    ItemsPerPage: number;
+    Locale: string;
+    PasswordMaxLength: number;
+    PasswordMinLength: number;
+    SendEmailFrom: string;
+    ThemeColor: string;
+    TimeFormat: string;
+    Title: string;
+    UploadAllowedExtensions: string;
+    UploadAllowedFileNumber: number;
+    UploadAllowedFileSize: number;
+    MaxTotalResults: number;
+    crm_records_and_fields: string;
+    crm_service_item: string;
+    crm_product_item: string;
+    crm_document_selector_fields: string;
+    crm_product: string;
+    crm_service: string;
+    crm_tax_rate: string;
+    crm_discount: string;
+    crm_default_currency: string;
+    MenuBadgeUpdateInterval: number;
+    DemoMode: number;
+    product_record_slugs: any
+}

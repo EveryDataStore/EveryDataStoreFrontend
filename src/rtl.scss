@@ -1,0 +1,66 @@
+
+.p-checkbox-label {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.p-highlight .p-checkbox .p-checkbox-box {
+    border: 1px solid #ced4da;
+}  
+
+.p-multiselect-panel .p-multiselect-header .p-checkbox {
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+}
+
+.p-multiselect-panel .p-multiselect-header .p-multiselect-close {
+    margin-right: 0.5rem;
+}
+
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item .p-checkbox {
+    margin-left: 0.5rem;
+}
+
+.p-radiobutton-label {
+    margin-right: 0.5rem;
+}
+
+.p-button .p-button-icon-left {
+    margin-left: 0.5rem;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    text-align: start;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+    text-align: start;
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content .p-treenode-icon {
+    margin-left: 0.5rem;
+}
+
+.p-tabview .p-tabview-left-icon {
+    margin-left: 0.5rem;
+}
+
+.p-dialog.p-confirm-dialog .p-confirm-dialog-message {
+    margin-right: 1rem;
+}
+
+.p-fileupload-row>div:last-child {
+    text-align: end !important;
+}
+
+.p-toast .p-toast-message .p-toast-message-content .p-toast-detail {
+    margin: 0.5rem 0.5rem 0 0;
+}
+
+.layout-wrapper .layout-menu-container .layout-menu li a .layout-submenu-toggler {
+    right: 0;
+}
+
+.layout-wrapper.layout-horizontal .layout-menu-container .layout-menu > li > a .layout-menuitem-icon {
+    margin-left: 0.5em;
+}

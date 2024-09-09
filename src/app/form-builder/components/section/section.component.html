@@ -1,0 +1,52 @@
+<p-panel [styleClass]="'form-section custom-section-header'">
+  <p-header>
+    <ng-container *ngIf="formMode === FormModeEnum.Build">
+      <div style="display: flex;">
+        <button pButton icon="fa fa-trash"
+                (click)="onDeleteSectionClicked()"
+                class="action-button"
+                [pTooltip]="'delete-section' | translate"></button>
+
+        <input pInputText type="text" [(ngModel)]="section.Title" />
+
+        <button pButton icon="fa fa-plus"
+                (click)="onAddColumnClicked()"
+                [style.display]="isAddColumnBtnDisabled()"
+                class="action-button"
+                [ngClass]="langDir=='rlt'?'add-button-rtl':'add-button'"
+                style="margin-right: 0"
+                label="{{'column' | translate}}"
+                [pTooltip]="'insert-column' | translate"></button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="formMode === FormModeEnum.Use">
+      <span style="font-weight: bold;">{{section.Title}}</span>
+    </ng-container>
+  </p-header>
+
+  <div class="grid" dnd-sortable-container [sortableData]="section.Columns" [dropZones]="['column']">
+    <div *ngFor="let column of section.Columns; let i = index" class="column-list" [ngClass]="getCssClassForColumns()"
+         dnd-sortable [sortableIndex]="i"
+         [dragEnabled]="isDrag"
+         (onDragStart)="onDragStart()"
+         (onDropSuccess)="onDropSuccess()" (onDragEnd)="onDragEnd()"
+    >
+
+      <!-- Move column button -->
+      <button pButton dnd-draggable *ngIf="formMode === FormModeEnum.Build"
+              (mouseover)="mouseover()"
+              (mouseleave)="mouseleave()"
+              [pTooltip]="'move-column' | translate" [ngStyle]="langDir=='rlt'?{'float': 'right'}:{'float': 'left'}" [icon]="'fa fa-arrows-alt'"
+              class="p-button-secondary"></button>
+
+      <app-column [column]="column"
+                  [fieldCollectionService]="fieldCollectionService"
+                  [formMode]="formMode"
+                  [formData]="formData"
+                  [recordItemSlug]="recordItemSlug"
+                  (deleteColumn)="deleteColumn(column)"></app-column>
+
+    </div>
+  </div>
+</p-panel>

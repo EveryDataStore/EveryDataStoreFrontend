@@ -1,0 +1,57 @@
+.new-item-btn {
+    float: right;
+    margin-bottom: 5px;  
+    margin-left: 5px; 
+    display: none;
+    min-width: 90px;
+}
+
+.table-header {
+    width: 100%;
+}
+
+.header-buttons-right{
+    text-align: right;
+}
+
+.header-buttons-left{
+    padding-top: 12px;
+}
+.header-buttons-left a, .header-buttons-left a .pi, .header-buttons-left{
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.header-buttons-left a:hover{
+    color:#333
+}
+
+:host::ng-deep .p-datatable .p-datatable-footer, :host::ng-deep .p-datatable .p-datatable-header{
+    padding: 0;
+}
+
+.grid{
+    padding-top:10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+}
+
+.a-content{
+    float: right;
+}
+
+.header-buttons-left a::after{
+    content: " / ";
+}
+
+@media screen and (max-width: 600px) {
+    .new-item-btn{
+        display:inline-block;
+    } 
+    .header-buttons-right{
+    text-align: left;
+    padding: 0;
+}
+}
+

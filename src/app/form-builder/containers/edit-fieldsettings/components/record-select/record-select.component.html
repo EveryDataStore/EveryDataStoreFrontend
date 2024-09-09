@@ -1,0 +1,8 @@
+@if (recordItems.length > 0) {
+  <p-dropdown [(ngModel)]="recordSlugSelected"
+              [options]="recordItems"
+              [appendTo]="'body'"
+              [placeholder]="'choose' | translate"
+              (onChange)="onSelectedItemChanged()"
+              ></p-dropdown>
+}

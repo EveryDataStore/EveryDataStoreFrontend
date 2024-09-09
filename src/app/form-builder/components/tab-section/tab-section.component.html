@@ -1,0 +1,10 @@
+<p-tabView>
+  <p-tabPanel *ngFor="let sec of sections" header="{{sec.Title | translate }}" leftIcon="pi pi-check">
+    <div *ngFor="let column of sec.Columns">
+      <app-column [column]="column"
+                  [fieldCollectionService]="fieldCollectionService"
+                  [formMode]="formMode"
+                  [recordItemSlug]="recordItemSlug"></app-column>
+    </div>
+  </p-tabPanel>
+</p-tabView>

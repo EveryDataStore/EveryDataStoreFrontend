@@ -1,0 +1,3 @@
+<p-dropdown *ngIf="!multiSelect" [options]="options" [id]="fieldId" [(ngModel)]="optionSelected" [style]="{'width': '100%'}" [placeholder]="placeholder"></p-dropdown>
+
+<p-multiSelect *ngIf="multiSelect" [options]="options" [id]="fieldId" [(ngModel)]="optionSelected" [style]="{'width': '100%'}" [defaultLabel]="placeholder"></p-multiSelect>

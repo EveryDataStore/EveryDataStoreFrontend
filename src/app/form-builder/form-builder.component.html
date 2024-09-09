@@ -1,0 +1,78 @@
+<div class="form-builder-container">
+  <div class="sticky" [ngClass]="langDir=='rlt'?'sticky-rtl':''" *ngIf="formMode === FormModeEnum.Build">
+    <!-- Add section button -->
+    <button   pButton *ngIf="formMode === FormModeEnum.Build"
+              [icon]="'fa fa-plus'"
+              (click)="onAddSectionClicked()"
+              [label]="'create-section' | translate"
+              class="action-button create-section" [style]="{'margin-bottom': '5px'}">
+    </button>
+    <!-- Field-type buttons -->
+    <span *ngFor="let formFieldType of formFieldTypes" [ngClass]="'action-button'">
+        <button pButton dnd-draggable
+                [dragEnabled]="true"
+                pTooltip ="'Drag & Drop Field to Section"
+                [dropZones]="['field']"
+                [icon]="formFieldType.FontIconCls"
+                [label]="formFieldType.Title"
+                (onDragStart)="onFieldDragStart(formFieldType)"
+                (onDragEnd)="onFieldDragEnd()"
+                class="p-button-secondary field-button action-button">
+        </button>
+    </span>
+  </div>
+
+  <div style="width: 100%;" class="form-builder" dnd-sortable-container [sortableData]="formData.Sections" [dropZones]="['section']">
+    <div *ngIf="formData.TapedForm == 0">
+      <div *ngFor="let section of formData.Sections; let i = index"
+           dnd-sortable [sortableIndex]="i"
+           [dragEnabled]="isDrag"
+           (onDragStart)="onDragStart()"
+           (onDropSuccess)="onDropSuccess()" (onDragEnd)="onDragEnd()"
+      >
+
+        <!-- Move section button -->
+        <button pButton *ngIf="formMode === FormModeEnum.Build"
+                dnd-draggable
+                (mouseover)="mouseover()"
+                (mouseleave)="mouseleave()"
+                [pTooltip]="'move-section' | translate" [ngStyle]="langDir=='rlt'?{'float': 'right','margin': '0px -5px 0px 5px'}:{'float': 'left','margin': '0px 5px 0px -5px'}" [icon]="'fa fa-arrows-alt'"
+                class="p-button-secondary"></button>
+
+        <app-section
+          (deleteSection)="deleteSection($event)"
+          [fieldCollectionService]="fieldCollectionService"
+          [section]="section"
+          [recordItemSlug]="recordItemSlug"
+          [formData]="formData"
+          [formMode]="formMode"></app-section>
+
+        <hr style="width: 100%" class="form-section-hr" *ngIf="i > 0">
+
+        <!-- CRM Plugin -->
+        <app-crm-plugin *ngIf="formMode === FormModeEnum.Use && i === formData.Sections.length - 2"
+                        [fieldCollectionService]="fieldCollectionService"
+                        [formData]="formData"
+                        [parentRecordSlug]="recordSlug"
+                        [parentRecordItemSlug]="recordItemSlug"></app-crm-plugin>
+      </div>
+
+
+      <!-- Add section button -->
+      <!--
+            <button   pButton *ngIf="formMode === FormModeEnum.Build"
+                      [icon]="'fa fa-plus'"
+                      (click)="onAddSectionClicked()"
+                      [label]="'create-section' | translate"
+                      class="action-button" [style]="{'margin-right': '15px'}"
+            ></button>
+      -->
+    </div>
+    <div *ngIf="formData.TapedForm == 1">
+      <app-tab-section [sections]="formData.Sections"
+                       [fieldCollectionService]="fieldCollectionService"
+                       [formMode]="formMode"></app-tab-section>
+    </div>
+  </div>
+
+</div>

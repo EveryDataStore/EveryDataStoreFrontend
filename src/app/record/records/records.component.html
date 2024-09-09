@@ -1,0 +1,95 @@
+
+<div style="clear: both;"></div>
+
+<!-- records table -->
+<p-table #dt
+    [value]="records"
+    [responsive]="true"
+    [globalFilterFields]="['Title']"
+    selectionMode="multi"
+    [paginator]=true
+    [rows]="itemsPerPage"
+    [rowsPerPageOptions]="[itemsPerPage, 20, 50, 70, 100]"
+    [showCurrentPageReport]="true"
+    [currentPageReportTemplate]="'page-report-template' | translate "
+    [(selection)]="recordsSelected"
+    >
+
+    <!-- table caption -->
+    <ng-template pTemplate="caption">
+        <div class="table-header">
+             <div class="grid">
+            <div class="col-12 md:col-6 lg:col-6 header-buttons-left">
+                <a [ngClass]="langDir=='rlt'?'a-content':''" href="{{dashboardPath}}"><i class="pi pi-home"></i> {{'dashboard' | translate}}</a> {{'records' | translate}}
+            </div>
+
+                 <div class="col-12 md:col-6 lg:col-6 header-buttons-right">
+                       <div class="p-inputgroup" [ngClass]="'global-search-input'">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-search"></i></span>
+                    <input type="text" pInputText placeholder="Global Search" (input)="dt.filterGlobal($any($event.target).value, 'contains')">
+                 <div class="table-header-right-buttons">
+                    <!-- new record button -->
+                    <button pButton *ngIf="permissions.canCreate" routerLink="/record/build" [label]="'new-item' | translate" icon="pi pi-plus-circle" class="new-item-btn "></button>
+                </div>
+                       </div>
+                 </div>
+             </div>
+
+
+        </div>
+    </ng-template>
+
+    <!-- table header -->
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th style="width: 14rem">
+                <button pButton *ngIf="permissions.canCreate" routerLink="/record/build" icon="pi pi-plus-circle" label="{{'new-item' | translate}}"
+          [class]="'new-item-table-btn'"></button>
+
+            </th>
+
+            <th [pSortableColumn]="'Title'">
+                {{'title' | translate}}
+                <p-sortIcon style="color: #6c757d;" [field]="'Title'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+            </th>
+        </tr>
+    </ng-template>
+
+    <!-- table body-->
+    <ng-template pTemplate="body" let-record>
+        <tr class="p-selectable-row">
+            <td>
+                <p-tableCheckbox [value]="record"></p-tableCheckbox>
+            </td>
+            <td>
+                <button pButton *ngIf="permissions.canView" type="button" (click)="onShowRecordItems(record.Slug)"  class="p-button-info" icon="pi pi-list" [pTooltip]="'show_items'" style="margin-right: .5em"></button>
+                <button pButton *ngIf="permissions.canCreate" type="button" (click)="onNewRecordItemClicked(record.Slug)"  class="p-button-primary" icon="pi pi-plus-circle" [pTooltip]="'insert_item'" style="margin-right: .5em"></button>
+                <button pButton *ngIf="permissions.canEdit" type="button" (click)="onEditRecordClicked(record.Slug)"  class="p-button-success" icon="pi pi-pencil" [pTooltip]="'edit'" style="margin-right: .5em"></button>
+                <button pButton *ngIf="permissions.canDelete" type="button" (click)="onDeleteRecordClicked(record.Slug)" class="p-button-warning" icon="pi pi-trash" [pTooltip]="'delete'" style="margin-right: .5em"></button>
+            </td>
+            <td>{{record.Title}}</td>
+        </tr>
+    </ng-template>
+
+  <!-- table summary -->
+  <ng-template pTemplate="summary">
+    <div style="display: flex;">
+      <div style="margin-right: 5px;margin-left:5px;">
+        <button pButton *ngIf="permissions.canDelete" [disabled]="recordsSelected.length === 0" type="button"
+                (click)="onMarkedRecordsDeleteClicked()"
+                [label]="getMultiDeleteBtnCaption()" class="p-button-warning" icon="pi pi-trash" [pTooltip]="'delete'"></button>
+      </div>
+      <div style="margin-right: 5px;margin-left:5px">
+        <p-splitButton label="{{'export' | translate}}" [model]="exportItems" styleClass="p-button-info"></p-splitButton>
+      </div>
+      <div style="margin-right: 5px;margin-left:5px">
+        <p-fileUpload #fileUpload mode="basic" accept=".json" customUpload="true" (uploadHandler)="import($event)"
+                      chooseLabel="{{'import' | translate}}"></p-fileUpload>
+      </div>
+    </div>
+  </ng-template>
+</p-table>

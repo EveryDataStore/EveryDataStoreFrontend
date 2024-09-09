@@ -1,0 +1,35 @@
+.tasks {
+  display: flex;
+}
+
+.definition {
+  width: 15%;
+  height: 80vh;
+  overflow: auto;
+  margin-right: 20px;
+}
+.definition-rtl {
+  margin-right: 0px !important;
+  margin-left: 20px;
+}
+
+.table {
+  width: 85%;
+}
+
+.card{
+    padding: 0 !important;
+}
+@media (max-width: 1200px) {
+  .tasks {
+    flex-direction: column;
+  }
+  .definition {
+    width: 100%;
+    height: auto;
+  }
+
+  .table {
+    width: 100%;
+  }
+}

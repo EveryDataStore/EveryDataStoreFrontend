@@ -1,0 +1,21 @@
+.action-button {
+    margin-right: 5px;
+}
+
+.add-button {
+  margin-left: 5px;
+  width: 140px;
+}
+
+.column-list {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+}
+.column-list:last-child {
+  padding-right: 0px;
+}
+.add-button-rtl{
+  margin-right: 5px !important;
+  width: 140px;
+}

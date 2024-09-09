@@ -1,0 +1,74 @@
+
+.p-button.action-button {
+  cursor: move;
+  width: 100% !important;
+}
+
+.p-button.field-button, .p-button.create-section {
+  cursor: move;
+  width: 100% !important;
+  margin-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:host::ng-deep .field-button .p-button-icon-left, :host::ng-deep .create-section .p-button-icon-left{
+    margin-right: 0.3rem !important;
+}
+
+:host::ng-deep .field-button .p-button-label {
+    flex:none !important;
+}
+
+:host::ng-deep .create-section .p-button-label {
+    flex:none !important;
+}
+
+.p-button .p-button-icon-left{
+    margin-right: 1px;
+}
+
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 20px;
+  align-self: flex-start;
+  margin-bottom: 15px;
+  margin-right: 15px;
+  width: 10%;
+}
+.sticky-rtl{
+  margin-left: 15px !important;
+  margin-right: auto !important;
+}
+
+.form-builder-container {
+  display: flex;
+}
+
+@media (max-width: 1200px) {
+
+  .form-builder-container {
+    display: block;
+  }
+
+  .sticky {
+    display: flex;
+    flex-wrap: wrap;
+    width: auto;
+    background: white;
+    top: 0px;
+    padding-top: 5px;
+    z-index: 9999999999;
+    margin-bottom: 20px;
+  }
+
+  .action-button {
+    margin-right: 10px;
+  }
+
+  .form-builder {
+    width: 100% !important;
+  }
+
+}

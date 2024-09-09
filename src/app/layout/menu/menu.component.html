@@ -1,0 +1,15 @@
+<div  class="layout-menu-container" (click)="onMenuClick($event)">
+    <div class="menu-scroll-content">
+        <!--<a href="javascript:void(0);" class="layout-menubar-logo">
+            <img id="menubar-logo" src="assets/layout/images/logo-dark.png">
+        </a>-->
+        
+        <ul  class="layout-menu" [ngClass]="this.langDir=='rtl'?'right-menu':'left-menu'">
+            <li app-menuitem *ngFor="let item of mainMenuItems; let i = index;" [item]="item" [index]="i" [root]="true"></li>
+        </ul>
+        <ul class="layout-menu" [ngClass]="this.langDir=='rtl'?'left-menu':'right-menu'">
+            <li app-menuitem *ngFor="let item of administrationMenuItems; let i = index;" [item]="item" [index]="i" [root]="true"></li>
+            <li app-menuitem *ngFor="let item of userMenuItems; let i = index;" [item]="item" [index]="i" [root]="true"></li>
+        </ul>
+    </div>
+</div>

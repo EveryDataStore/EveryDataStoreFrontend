@@ -1,0 +1,8 @@
+@if (models.length > 0) {
+  <p-dropdown [(ngModel)]="modelSelected"
+              [options]="models"
+              [appendTo]="'body'"
+              [placeholder]="'choose' | translate"
+              (onChange)="onSelectedItemChanged()"
+              ></p-dropdown>
+}

@@ -1,0 +1,15 @@
+<span [ngClass]="langDir=='rtl'?'dir-rtl':'dir-ltr'">
+<p-toast position="top-center" [styleClass]="'toast'"></p-toast>
+<p-toast key="error" position="top-center" [styleClass]="'toast'"></p-toast>
+
+<p-confirmDialog id="RootConfirmDialog" header="Bitte bestätigen" [acceptLabel]="'yes' | translate" [rejectLabel]="'no' | translate"
+  [acceptButtonStyleClass]="'p-button-success'" icon="pi pi-exclamation-triangle" [ngStyle]="{'width':'425px'}">
+</p-confirmDialog>
+
+<div class="main-progress-spinner" *ngIf="isBusy()">
+  <div class="spinner">
+      <span class="pi pi-spin pi-spinner" style="font-size: 3em;"></span>
+  </div>
+</div>
+<router-outlet></router-outlet>
+</span>

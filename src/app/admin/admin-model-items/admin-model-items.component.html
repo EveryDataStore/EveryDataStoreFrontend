@@ -1,0 +1,144 @@
+<div style="clear: both;"></div>
+<p-table #dt [value]="items"
+         [paginator]=true
+         [rows]="itemsPerPage"
+         [rowsPerPageOptions]="[10, 20, 50, 70, 100]"
+         [responsive]=true
+         [rowHover]=true
+         [totalRecords]="itemsCount"
+         [lazy]=true
+         (onLazyLoad)="loadItemsLazy($event)"
+         [lazyLoadOnInit]=false
+         [(selection)]="itemsSelected"
+         [reorderableColumns]="reorderable"
+         [showCurrentPageReport]="true"
+         [currentPageReportTemplate]="'page-report-template' | translate "
+         (onRowReorder)="sortColumn()">
+"
+  <ng-template pTemplate="caption">
+    <div class="table-header">
+
+
+         <div class="grid">
+            <div class="col-12 md:col-6 lg:col-6 header-buttons-left">
+                <a [ngClass]="langDir=='rlt'?'a-content':''" href="{{dashboardPath}}"><i class="pi pi-home"></i> {{'dashboard' | translate}}</a> {{modelName}}
+            </div>
+
+                  <div class="col-12 md:col-6 lg:col-6 header-buttons-right">
+
+                      <div class="table-header-right" >
+        <div *ngIf="showFilter">
+          <p-calendar (onSelect)="onCreatedFrom($event)" dateFormat="dd.mm.yy"
+                      placeholder="{{'created-from' | translate}}" [appendTo]="'body'"></p-calendar>
+        </div>
+        <div *ngIf="showFilter">
+          <p-calendar (onSelect)="onCreatedTo($event)" dateFormat="dd.mm.yy"
+                      placeholder="{{'created-to' | translate}}" [appendTo]="'body'"></p-calendar>
+        </div>
+            <div class="p-inputgroup" [ngClass]="'global-search-input'" style="float: right; width: 100%; padding: 0">
+           <span class="p-inputgroup-addon">
+             <i class="pi  pi-calendar p-pi-filter" (click)="onShowFilter()"></i></span>
+          <input type="text" pInputText placeholder="{{'search-items' | translate}}" (input)="search($any($event.target).value)">
+        </div>
+
+          <button pButton *ngIf="permissions.canCreate" (click)="onNewItemClicked()" icon="pi pi-plus-circle" label="{{'new-item' | translate}}"
+          [class]="'new-item-btn'"></button>
+
+        </div>
+      </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="header" let-columns="cols">
+    <tr>
+      <th style="width: 3rem">
+        <p-tableHeaderCheckbox *ngIf="modelName !='App'"></p-tableHeaderCheckbox>
+      </th>
+      <th *ngIf="reorderable" style="width: 13rem">
+          <button pButton *ngIf="permissions.canCreate && modelName !='App' " (click)="onNewItemClicked()" icon="pi pi-plus-circle" label="{{'new-item' | translate}}"
+          [class]="'new-item-table-btn'"></button>
+
+      </th>
+      <th *ngIf="!reorderable" style="width: 9rem">
+       <button pButton *ngIf="permissions.canCreate && modelName !='App'" (click)="onNewItemClicked()" icon="pi pi-plus-circle" label="{{'new-item' | translate}}"
+          [class]="'new-item-table-btn'"></button>
+      </th>
+      <th *ngFor="let col of cols" [pSortableColumn]="col.name">
+          <span *ngIf="modelName!='App'">{{col.title}}</span>
+          <span *ngIf="modelName =='App' && col.name != 'Description'">{{col.title}}</span>
+
+        <p-sortIcon *ngIf="modelName!='App'" style="color: #6c757d;" [field]="col.name" ariaLabel="Activate to sort"
+                    ariaLabelDesc="Activate to sort in descending order"
+                    ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-item let-rowIndex="rowIndex" let-columns="cols">
+      <tr [pReorderableRow]="rowIndex" class="p-selectable-row">
+      <td>
+        <p-tableCheckbox *ngIf="modelName !='App'" [value]="item"></p-tableCheckbox>
+      </td>
+      <td>
+        <span *ngIf="reorderable" class="pi pi-bars reorderable-btn" pReorderableRowHandle></span>
+
+        <button pButton type="button" *ngIf="permissions.canEdit && modelName !='App'" (click)="onEditItemClicked(item.Slug)" class="p-button-success"
+                icon="pi pi-pencil" [pTooltip]="'Edit'" style="margin-right: .5em"></button>
+
+        <button pButton type="button" *ngIf="permissions.canDelete && modelName !='App'" (click)="onDeleteItemClicked(item.Slug)" class="p-button-warning"
+                icon="pi pi-trash" [pTooltip]="'Delete'" style="margin-right: .5em"></button>
+
+        <button pButton type="button" *ngIf="permissions.canInstall && modelName =='App' && item.Installed == '0'" (click)="onInstallApp(item)" class="p-button-success"
+                icon="pi pi-download" [pTooltip]="'Install'" label="Install" style="margin-right: .5em"></button>
+
+        <button pButton type="button" *ngIf="permissions.canDeinstall && modelName =='App' && item.Installed == '1'" (click)="onDeinstallApp(item)" class="p-button-warning"
+                icon="pi pi-download" [pTooltip]="'Deinstall'" label="Deinstall" style="margin-right: .5em"></button>
+      </td>
+      <td *ngFor="let col of cols" style="word-wrap:break-word;" (click)="onAppRowClicked(item)">
+        <span class="p-column-title">{{col.title}}</span>
+        <div *ngIf="modelName =='App' && col.name !='Description'" [innerHTML]="getItemValueFromColumn(item, col)"></div>
+        <div *ngIf="modelName !=='App'" [innerHTML]="getItemValueFromColumn(item, col)"></div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="summary">
+    <div style="display: flex;"  *ngIf="modelName !='App'">
+      <div style="margin-right: 5px;margin-left: 5px;">
+        <button pButton *ngIf="permissions.canDelete" [disabled]="itemsSelected.length === 0" type="button"
+                (click)="onMarkedItemsDeleteClicked()"
+                [label]="getMultiDeleteBtnCaption()" class="p-button-warning" icon="pi pi-trash"
+                [pTooltip]="'delete'"></button>
+      </div>
+      <div style="margin-right: 5px;margin-left: 5px;">
+        <p-splitButton label="{{'export' | translate}}" [model]="exportItems" styleClass="p-button-info"></p-splitButton>
+      </div>
+      <div style="margin-right: 5px;margin-left: 5px;">
+        <p-fileUpload #fileUpload mode="basic" accept=".json,.csv" customUpload="true" (uploadHandler)="import($event)"
+                      chooseLabel="{{'import' | translate}}"></p-fileUpload>
+      </div>
+    </div>
+  </ng-template>
+</p-table>
+<p-dialog header="{{appItem.Title}}" *ngIf="appItem" [(visible)]="appItem" [closable]="true"
+          [style]="{'width': '90%'}"
+          [modal]="true">
+   <div class="app-dialog grid">
+       <div class="col-12 md:col-9 lg:col-9">
+       <h5>{{'price' | translate}}: {{appItem.DisplayPrice}}</h5>
+       <h5>{{'installed' | translate}}: {{appItem.Installed}}</h5>
+       <h5>{{'version' | translate}}: {{appItem.Version}}</h5>
+       <h5>{{'author' | translate}}: {{appItem.Author}}</h5>
+       <h5 *ngIf="appItem.Website"><a href="{{appItem.Website}}" target="blank">{{appItem.Website}}</a></h5>
+       </div>
+       <div  *ngIf="appItem.Icon" class="p-col-12 p-md-3 p-lg-3"><img width="auto" [src]="appItem.Icon.src" alt="icon"></div>
+       <p>{{appItem.Description}}</p>
+   </div>
+ <p-footer>
+        <button pButton type="button" *ngIf="permissions.canInstall && modelName =='App' && appItem.Installed == 'No'" (click)="onInstallApp(appItem)" class="p-button-success"
+                icon="pi pi-download" [pTooltip]="'Install'" label="Install" style="margin-right: .5em"></button>
+
+        <button pButton type="button" *ngIf="permissions.canDeinstall && modelName =='App' && appItem.Installed == 'Yes'" (click)="onDeinstallApp(appItem)" class="p-button-warning"
+                icon="pi pi-download" [pTooltip]="'Deinstall'" label="Deinstall" style="margin-right: .5em"></button>
+    </p-footer>
+</p-dialog>

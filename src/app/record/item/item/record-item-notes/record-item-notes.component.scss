@@ -1,0 +1,40 @@
+.add-notes-container {
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.note-list-container {
+    width: 50%;
+
+    &-note {
+        margin-bottom: 20px;
+
+
+        &-header {
+            display: flex;
+            width: 100%;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #000;
+
+            &-name {
+                width: 30%;
+            }
+
+            &-created-date {
+                width: 30%;
+            }
+
+            &-actions {
+                float: right;
+                text-align: right;
+                width: 40%;
+                color: red;
+
+                i {
+                    font-size: 22px;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}

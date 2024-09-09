@@ -1,0 +1,508 @@
+<app-is-active-app-message [isActiveApp]="isFilemanagerActive" [appName]="'Every Filemanager'"></app-is-active-app-message>
+
+<div *ngIf="isFilemanagerActive">
+  <ng-container *ngIf="isPopup; then itIsPopup else showContent"></ng-container>
+  <ng-template #itIsPopup>
+  </ng-template>
+  <ng-template #showContent>
+    <div class="content">
+      <div class="file-manager-navbar">
+        <div class="path">
+          <!-- navigation top left -->
+          <div class="top-nav-left">
+            <div [title]="'upload-file' | translate">
+              <p-fileUpload #fileUpload mode="basic" name="myfile[]" customUpload="true" multiple="multiple"
+                            [uploadLabel]="'upload' | translate" [chooseLabel]="''"
+                            [auto]="true" accept="{{uploadAllowedExtensions}}" maxFileSize="{{uploadAllowedFileSize}}"
+                            fileLimit="{{uploadAllowedFileNumber}}" (uploadHandler)="ImageUpload($event)">
+              </p-fileUpload>
+            </div>
+            <button type="button" [title]="'create-folder' | translate" class="m-l-5 m-r-5 addFloder"
+                    (click)="showCreateFolderDialog()" pButton icon="pi pi-plus"></button>
+            <button type="button" [title]="'edit-folder' | translate" class="m-l-5 editFolder"
+                    (click)="showEditFolderDialog()" pButton icon="pi pi-pencil"></button>
+            <button type="button" [title]="'delete-folder' | translate" class="m-l-5 deleteFolder"
+                    (click)="showDeleteFolderDialog()" pButton icon="pi pi-trash"></button>
+          </div>
+
+          <!-- navigation top right -->
+          <div class="top-nav-right" *ngIf="showFilter">
+            <p-calendar class="m-l-0 p-cal" [showIcon]="true" [(ngModel)]="fromDate"
+                        placeholder="{{'From' | translate}}"
+                        [dateFormat]="'yy-mm-dd'" [dataType]="'string'"></p-calendar>
+            <p-calendar class="m-l-5 m-r-5 p-cal" [showIcon]="true" [(ngModel)]="toDate"
+                        placeholder="{{'To' | translate}}"
+                        [dateFormat]="'yy-mm-dd'" [dataType]="'string'"></p-calendar>
+            <!--<input type="number" class="m-l-5 m-r-5" [(ngModel)]="minPageSize" pInputText />
+            <input type="number" class="m-l-5 m-r-5" [(ngModel)]="maxPageSize" pInputText />
+            -->
+            <button type="button" (click)="onSearch()" pButton icon="pi pi-search"></button>
+          </div>
+
+          <!-- create folder popup  -->
+          <p-dialog header="{{'CreateFolder' | translate}}" [(visible)]="createFolderDisplay" [modal]="true"
+                    [style]="{width: '40vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+            <label style="width: 100%;">{{'name' | translate}}</label>
+            <input type="text" id="input" style="width: 100%;" [(ngModel)]="AddFolderName" pInputText/>
+            <p-footer>
+              <button type="button" pButton (click)="AddNewFolder()" label="{{'Save' | translate}}"
+                      class="p-button-success"></button>
+              <button type="button" pButton (click)="createFolderDisplay=false" label="{{'Cancel' | translate}}"
+                      class="p-button-secondary"></button>
+            </p-footer>
+          </p-dialog>
+
+          <!-- Edit folder popup  -->
+          <p-dialog header="{{'EditFolder' | translate}}" [(visible)]="editFolderDisplay" [modal]="true"
+                    [style]="{width: '40vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+            <div>
+              <label style="width: 100%;">{{'name' | translate}}</label>
+              <input type="text" style="width: 100%;" [(ngModel)]="EditFolderName" pInputText/>
+            </div>
+            <div class="p-t-10">
+              <label style="width: 100%;">{{'Parent' | translate}}</label>
+              <select [(ngModel)]="parentFolderSlugSelected" class="manual-dropdown">
+                <option *ngFor="let obj of tempFolderName" [value]="obj.value">{{obj.name}}</option>
+              </select>
+            </div>
+            <p-footer>
+              <button type="button" pButton (click)="RenameFileName()" label="{{'Save' | translate}}"
+                      class="p-button-success"></button>
+              <button type="button" pButton (click)="editFolderDisplay=false" label="{{'Cancel' | translate}}"
+                      class="p-button-secondary"></button>
+            </p-footer>
+          </p-dialog>
+
+          <!-- Delete item popup  -->
+          <p-dialog header="{{'confirm.please-confirm' | translate}}" [(visible)]="deleteFileDisplay" [modal]="true"
+                    [style]="{width: '40vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+            <label style="width: 100%;">{{'Want_delete_Item' | translate}}</label>
+            <p-footer>
+              <button type="button" pButton (click)="DeleteFile('')" label="{{'Delete' | translate}}"
+                      class="p-button-warning"></button>
+              <button type="button" pButton (click)="DeleteFile('permanently')"
+                      label="{{'PermanentlyDelete' | translate}}" class="p-button-danger"></button>
+              <button type="button" pButton (click)="deleteFileDisplay=false" label="{{'Cancel' | translate}}"
+                      class="p-button-secondary"></button>
+            </p-footer>
+          </p-dialog>
+
+          <!-- file limit popup  -->
+          <p-dialog header="{{'FileLimitAlert' | translate}}" [(visible)]="fileLimitDisplay" [modal]="true"
+                    [style]="{width: '40vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+            <label style="width: 100%;">{{'File_Limit_Message' | translate}}{{nextConfig.FileNumber}}</label>
+            <p-footer>
+              <button type="button" pButton (click)="clearFileUploader()" label="{{'Ok' | translate}}"
+                      class="p-button-secondary"></button>
+            </p-footer>
+          </p-dialog>
+
+          <!-- file detail  -->
+          <p-dialog #pd id="fileDialogue" [(visible)]="fileDetailView" [modal]="true" [style]="{width: '100%'}"
+                    [maximizable]="false" (onShow)="showDialogMaximized()" [baseZIndex]="10000"
+                    [draggable]="false" [resizable]="false" [showHeader]="false" styleClass="dialog-container">
+
+
+            <!-- [showHeader]="false" -->
+            <p-button (click)="closeFileDialog()" icon="pi pi-times" styleClass="closeBtn"></p-button>
+            <!-- <a href="javascript:;" (click)="fileDialogue=false"><i class=""></i></a> -->
+            <div class="grid ">
+              <div class="col-12" [ngClass]="detailDialogDatapanelVisible ? 'md:col-8 lg:col-8' : ''">
+                <div class="dialog-left" style="position: relative;">
+                  <p-tabView>
+                    <p-tabPanel header="{{'document' | translate}}">
+                      <div *ngIf="isFile">
+                        <ngx-doc-viewer id="print-section" [url]="fileLink" viewer="url"
+                                        style="width:100%;height: calc(100vh - 125px);">
+                        </ngx-doc-viewer>
+                      </div>
+
+                      <div *ngIf="!isFile" id="printimage" style="width:100%;height: calc(100vh - 125px);">
+                        <img [src]="fileLink" alt="File link">
+                      </div>
+
+                    </p-tabPanel>
+                    <p-tabPanel header="{{'notes' | translate}}">
+                      <form (ngSubmit)="submitNoteDate(singleFileData.Slug)" *ngIf="singleFileData">
+                        <input type="text" style="width: 100%;" pInputText [ngModelOptions]="{standalone: true}"
+                               [(ngModel)]="Note" placeholder="{{'Add_your_note_here' | translate}}"/>
+                        <button type="submit" pButton label="{{'add-note' | translate}}"
+                                class="p-button-primary mt-3"></button>
+                      </form>
+                      <ul class="noteList" *ngIf="singleFileData">
+                        <li *ngFor="let note of singleFileData.Notes">
+                          {{note.Content}}
+                          <p>
+                            {{note.CreatedBy}}
+                            <span>{{note.Created}}
+                              <i class="pi pi-trash" (click)="deleteNote(note.Slug)"></i>
+                                                        </span>
+                          </p>
+                        </li>
+                      </ul>
+                    </p-tabPanel>
+
+
+                    <p-tabPanel header="{{'versions' | translate}}" *ngIf="singleFileData">
+                      <p-table #dt [value]="singleFileData.Versions" [totalRecords]="UserFolderFiles.iTotalRecords"
+                               [loading]="loading" class="tblVersions">
+                        <ng-template pTemplate="header">
+                          <tr>
+                            <th>{{'name' | translate}}</th>
+                            <th>{{'title' | translate}}</th>
+                            <th>{{'version' | translate}}</th>
+                            <th>{{'firstupload' | translate}}</th>
+                            <th>{{'lastchanged' | translate}}</th>
+                            <th>{{'changedby' | translate}}</th>
+                          </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-version>
+                          <tr>
+                            <td>
+                              {{version.Name}}
+                            </td>
+                            <td>
+                              {{version.Title}}
+                            </td>
+                            <td>
+                              {{version.Version}}
+                            </td>
+                            <td>
+                              {{version.Created}}
+                            </td>
+                            <td>
+                              {{version.LastEdited}}
+                            </td>
+                            <td>
+                              {{version.UpdatedBy}}
+                            </td>
+                          </tr>
+                        </ng-template>
+                        <!-- <ng-template pTemplate="paginatorleft" let-state>
+                          Showing {{(state.page * state.rows) + 1}} to {{(state.rows * (state.page + 1)) > state.totalRecords ? state.totalRecords
+                          :(state.rows * (state.page + 1)) }} of {{state.totalRecords}}
+                        </ng-template> -->
+                      </p-table>
+                    </p-tabPanel>
+                  </p-tabView>
+                  <div class="show-data-panel-button">
+                    <p-button [label]="detailDialogDatapanelVisible ? ('hide-editfields' | translate) : ('show-editfields' | translate)"
+                              [icon]="detailDialogDatapanelVisible ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                              severity="secondary"
+                              (onClick)="detailDialogDatapanelVisible = !detailDialogDatapanelVisible"></p-button>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="detailDialogDatapanelVisible" class="col-12 md:col-4 lg:col-4">
+                <div class="dialog-right" >
+                  <div class="top-navigation">
+                    <ul class="controls" *ngIf="singleFileData">
+                      <li (click)="DeleteCurrentSlug()" title="{{'DeleteDocument' | translate}}">
+                        <a href="javascript:">
+                          <i class="pi pi-trash"></i>
+                        </a>
+                      </li>
+                      <li title="{{'download' | translate}}">
+                        <a [href]="singleFileData.Link" target="_blank">
+                          <i class="pi pi-download"></i>
+                        </a>
+                      </li>
+                      <li title="{{'print' | translate}}" (click)="printfile()">
+                        <a href="javascript:void(0)">
+                          <i class="pi pi-print"></i>
+                        </a>
+                      </li>
+                      <li title="{{'previous' | translate}}"
+                          (click)="getFileDataAndShowFileDialogue('',singleFileData.PrevFileSlug)">
+                        <a href="javascript:void(0)">
+                          <i class="pi pi-arrow-circle-left"></i>
+                        </a>
+                      </li>
+                      <li title="{{'next' | translate}}"
+                          (click)="getFileDataAndShowFileDialogue('',singleFileData.NextFileSlug)">
+                        <a href="javascript:void(0)">
+                          <i class=" pi pi-arrow-circle-right"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="main-content">
+                    <form (ngSubmit)="submitFileData()" *ngIf="groupData" [formGroup]="form">
+                      <p-tabView>
+                        <p-tabPanel header="{{'main' | translate}}">
+                          <!-- <form (ngSubmit)="onSubmit()" *ngIf="singleFileData"> -->
+                          <span class="p-float-label float-margin">
+                                                        <input id="float-Title" class="fullWidth" type="text"
+                                                               [ngModelOptions]="{standalone: true}"
+                                                               [(ngModel)]="singleFileData.Title" size="30" pInputText>
+                                                        <label [ngClass]="langDir=='rlt'?'right-0-5':''"
+                                                               for="float-Title">{{'title' | translate}}</label>
+                                                    </span>
+                          <span class="p-float-label float-margin">
+                                                        <input id="float-Name" class="fullWidth" type="text"
+                                                               [ngModelOptions]="{standalone: true}"
+                                                               [(ngModel)]="singleFileData.Name" size="30" pInputText>
+                                                        <label [ngClass]="langDir=='rlt'?'right-0-5':''"
+                                                               for="float-Name">{{'name' | translate}}</label>
+                                                    </span>
+                          <span class="p-float-label float-margin">
+                                                        <input id="float-Slug" class="fullWidth" type="text" disabled
+                                                               [ngModelOptions]="{standalone: true}"
+                                                               [(ngModel)]="singleFileData.Slug" size="30" pInputText>
+                                                        <label [ngClass]="langDir=='rlt'?'right-0-5':''"
+                                                               for="float-Slug">{{'Slug' | translate}}</label>
+                                                    </span>
+                          <span class="p-float-label float-margin">
+                                                        <input id="float-First-uploaded" class="fullWidth" type="text"
+                                                               disabled
+                                                               [ngModelOptions]="{standalone: true}"
+                                                               [(ngModel)]="singleFileData.Created" size="30"
+                                                               pInputText>
+                                                        <label [ngClass]="langDir=='rlt'?'right-0-5':''"
+                                                               for="float-First-uploaded">{{'firstupload' | translate}}</label>
+                                                    </span>
+                          <span class="p-float-label float-margin">
+                                                        <input id="float-Last-changed" class="fullWidth" type="text"
+                                                               disabled
+                                                               [ngModelOptions]="{standalone: true}"
+                                                               [(ngModel)]="singleFileData.LastEdited" size="30"
+                                                               pInputText>
+                                                        <label [ngClass]="langDir=='rlt'?'right-0-5':''"
+                                                               for="float-Last-changed">{{'lastchanged' | translate}}</label>
+                                                    </span>
+                          <span class="p-float-label float-margin">
+                                                        <input id="float-Created-By" class="fullWidth" type="text"
+                                                               disabled
+                                                               [ngModelOptions]="{standalone: true}"
+                                                               [(ngModel)]="singleFileData.CreatedBy" size="30"
+                                                               pInputText>
+                                                        <label [ngClass]="langDir=='rlt'?'right-0-5':''"
+                                                               for="float-Created-By">{{'createdby' | translate}}</label>
+                                                    </span>
+                          <span class="p-float-label float-margin">
+                                                        <input id="float-Changed-By" class="fullWidth" type="text"
+                                                               disabled
+                                                               [ngModelOptions]="{standalone: true}"
+                                                               [(ngModel)]="singleFileData.UpdatedBy" size="30"
+                                                               pInputText>
+                                                        <label [ngClass]="langDir=='rlt'?'right-0-5':''"
+                                                               for="float-Changed-By">{{'changedby' | translate}}</label>
+                                                    </span>
+                          <span class="p-float-label float-margin">
+                                                        <input id="float-Filename" class="fullWidth" type="text"
+                                                               disabled
+                                                               [ngModelOptions]="{standalone: true}"
+                                                               [(ngModel)]="singleFileData.Filename" size="30"
+                                                               pInputText>
+                                                        <label [ngClass]="langDir=='rlt'?'right-0-5':''"
+                                                               for="float-Filename">{{'filename' | translate}}</label>
+                                                    </span>
+                          <span class="p-float-label float-margin">
+                                                        <input id="float-LINK" class="fullWidth" type="text" disabled
+                                                               [ngModelOptions]="{standalone: true}"
+                                                               [(ngModel)]="singleFileData.Link" size="30" pInputText>
+                                                        <label [ngClass]="langDir=='rlt'?'right-0-5':''"
+                                                               for="float-LINK">{{'link' | translate}}</label>
+                                                    </span>
+                          <!-- <button pButton type="submit" label="Primary" class="ui-button-rounded"></button> -->
+                          <!-- </form> -->
+                        </p-tabPanel>
+                        <p-tabPanel header="{{'permissions' | translate}}">
+
+                          <div class="grid" style="margin-bottom:10px">
+                            <div class="col-12">
+                              <p-radioButton name="group1" value="Anyone" [ngModelOptions]="{standalone: true}"
+                                             [(ngModel)]="singleFileData.fileCanViewType"
+                                             (click)="OnPermissionGroups(false)" label="{{'anyone' | translate}}"
+                                             inputId="opt1">
+                              </p-radioButton>
+                            </div>
+                            <div class="col-12">
+                              <p-radioButton name="group1" value="LoggedInUsers" (click)="OnPermissionGroups(false)"
+                                             [ngModelOptions]="{standalone: true}"
+                                             [(ngModel)]="singleFileData.fileCanViewType"
+                                             label="{{'logged_in_users' | translate}}"
+                                             inputId="opt2">
+                              </p-radioButton>
+                            </div>
+                            <div class="col-12">
+                              <p-radioButton name="group1" value="OnlyTheseUsers" (click)="OnPermissionGroups(true)"
+                                             [ngModelOptions]="{standalone: true}"
+                                             [(ngModel)]="singleFileData.fileCanViewType"
+                                             label="{{'only_these_groups' | translate}}"
+                                             inputId="opt3">
+                              </p-radioButton>
+                            </div>
+                          </div>
+                          <div *ngIf="showPermissionGroups || singleFileData.fileCanViewType == 'OnlyTheseUsers'"
+                               class="multiSelect-section">
+                            <label>{{'viewer_groups' | translate}}</label>
+                            <p-multiSelect [options]="groups" [style]="{width:'100%'}"
+                                           [showToggleAll]="false" [filter]="false"
+                                           [ngModelOptions]="{standalone: true}"
+                                           [(ngModel)]="selectedViewerGroups">
+                            </p-multiSelect>
+                          </div>
+                          <div *ngIf="showPermissionGroups || singleFileData.fileCanViewType == 'OnlyTheseUsers'"
+                               class="multiSelect-section">
+                            <label>{{'editor_groups' | translate}}</label>
+                            <p-multiSelect [options]="groups" [style]="{width:'100%'}"
+                                           [showToggleAll]="false" [filter]="false"
+                                           [ngModelOptions]="{standalone: true}"
+                                           [(ngModel)]="selectedEditorGroups">
+                            </p-multiSelect>
+                          </div>
+                        </p-tabPanel>
+                      </p-tabView>
+                      <button pButton type="submit" label="{{'save' | translate}}" class="p-button-info mt-3"></button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </p-dialog>
+
+        </div>
+        <!-- file detail  -->
+        <div class="navigation">
+          <!-- <p-menu #menu [popup]="true" [model]="items" class="deleteAction"></p-menu>
+          <button type="button" pButton *ngIf="!IsListView" label="{{'Actions' | translate}}"
+            (click)="menu.toggle($event)" ></button> -->
+          <button type="button" class="m-l-5" (click)="OnFiltervisable()"
+                  title="{{'search-filter' | translate}}" pButton icon="pi pi-filter"></button>
+          <button type="button" class="m-l-5" (click)="OnGridView()" title="{{'list-view' | translate}}" pButton
+                  icon="pi pi-th-large"></button>
+          <button type="button" class="m-l-5" (click)="OnListView()" title="{{'table-view' | translate}}" pButton
+                  icon="pi pi-bars"></button>
+        </div>
+      </div>
+
+      <div class="holder row mx-0">
+
+        <div class="holder-left">
+          <!-- <p-tree [value]="files" selectionMode="single" (onNodeSelect)="nodeSelect($event)">
+            <ng-template let-node pTemplate="default">
+              <div pDraggable="cars" (onDrop)="onDrop($event)">{{node.label}}</div>
+            </ng-template>
+          </p-tree> -->
+
+          <p-tree [value]="files" [loading]="treeLoading" selectionMode="single" [(selection)]="selectedFiles"
+                  (onNodeSelect)="nodeSelect($event)">
+            <ng-template let-node pTemplate="default">
+              <div pDroppable="onDrop" pDraggable="onDrop" (onDrop)="onDrop($event,node)">{{node.label}}</div>
+            </ng-template>
+          </p-tree>
+
+        </div>
+
+        <div [ngClass]="langDir=='rlt'?'left':'right'">
+          <!-- <div *ngIf="IsListView"> -->
+          <div>
+            <p-fileUpload mode="advanced" #fileUpload2 id="fileUpload2" name="myfile[]" customUpload="true"
+                          multiple="multiple" [auto]="true" (uploadHandler)="ImageUpload($event)"
+                          accept="{{uploadAllowedExtensions}}" maxFileSize="{{uploadAllowedFileSize}}"
+                          fileLimit="{{uploadAllowedFileNumber}}">
+              <ng-template pTemplate="content">
+                <div *ngIf="UserFolderFiles" [ngStyle]="{'display': IsListView==true ? 'block' : 'none'}">
+                  <p-table #dt [paginator]="true" selectionMode="single"
+                           (onRowSelect)="onTableRowSelect($event.data.Slug)" [rows]="currentMinPageSize"
+                           [value]="UserFolderFiles.aaData" [totalRecords]="UserFolderFiles.iTotalRecords"
+                           [loading]="tableLoading">
+                    <ng-template pTemplate="header" let-columns>
+                      <tr>
+                        <th *ngFor="let head of UserFolderFiles.resultListLabels" [pSortableColumn]="head.data"
+                            [ngSwitch]="head.data">
+                          {{head.data == 'Action' ? '' : head.data}}
+                          <p-sortIcon *ngIf="head.data!='Action'" [field]="head.data"></p-sortIcon>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th *ngFor="let head of UserFolderFiles.resultListLabels">
+                          <input pInputText type="text" *ngIf="head.data!='Action'" [placeholder]="head.data"
+                                 class="ui-column-filter" style="width: 100%;"
+                                 (input)="dt.filter($any($event.target).value, head.data, 'contains')"/>
+
+                          <!-- (input)="filter($event.target.value, head.data)" -->
+                          <!-- (input)="dt.filter($event.target.value, head.data, 'contains')" -->
+                          <p-checkbox binary="true" *ngIf="head.data=='Action'" (onChange)="OnSelectAll()"
+                                      [(ngModel)]="this['IsChkCheckAll']"></p-checkbox>
+                          <p-menu #menu [popup]="true" [model]="items" class="delete-dropdown"></p-menu>
+                          <button type="button" pButton *ngIf="head.data=='Action'" label="{{'actions' | translate}}"
+                                  (click)="menu.toggle($event)" class="action-btn"></button>
+                        </th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-columns="UserFolderFiles.resultListLabels">
+                      <tr [pSelectableRow]="rowData" pDraggable="onDrop"
+                          (onDragStart)="dragStart($event,rowData['Slug'])">
+                        <td *ngFor="let col of UserFolderFiles.resultListLabels; let i = index">
+                                                    <span *ngIf="col.data=='Action'">
+                                                        <p-checkbox name="group1" binary="true"
+                                                                    [(ngModel)]="this['IsChkCheck-'+rowData['Slug']]"
+                                                                    (onChange)="getFileDataAndShowFileDialogue($event,rowData['Slug'])"></p-checkbox>
+                                                    </span>{{rowData[col.data]}}
+                        </td>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage" let-columns>
+                      <tr>
+                        <td [attr.colspan]="8" class="tblNodatastyle">
+                          {{'no_records_found' | translate}}
+                        </td>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="paginatorleft" let-state>
+                      <div class="page-count">
+                        {{'showing' | translate}} {{(state.page * state.rows) + 1}} {{'to' | translate}} {{(state.rows * (state.page + 1)) > state.totalRecords ? state.totalRecords
+                        : (state.rows * (state.page + 1)) }} {{'of' | translate}} {{state.totalRecords}}
+                      </div>
+
+                    </ng-template>
+                  </p-table>
+                </div>
+                <div class="item-holder" #itemHolder [ngStyle]="{'display': IsListView==true ? 'none' : 'block'}">
+                  <div *ngIf="UserFolderFiles">
+                    <div *ngIf="!visibleNodataFound" class="thumb row mx-0">
+                      <div *ngFor="let col of UserFolderFiles.aaData" pDraggable="onDrop"
+                           (onDragStart)="dragStart($event,col.Slug)" (click)="onTableRowSelect(col.Slug)"
+                           class="file-manager-item highlighted" #fileItem>
+                        <div title="{{col.Title}}">
+                          <i class="fa fa-close" title="{{'delete' | translate}}"
+                             (click)="$event.stopImmediatePropagation();DeleteCurrentFileSlug(col.Slug)"></i>
+                          <div #filePreview class="file-preview">
+                            <!-- <p-checkbox name="group2" binary="true" [(ngModel)]="this['IsChkCheck-'+col.Slug]"
+                              [style]="{'float':'left'}"></p-checkbox> -->
+                            <i *ngIf="!col.isImage" [ngClass]="col.fileIcon" #fileIcon></i>
+                            <img [src]="col.ViewerLink" *ngIf="col.isImage" style="height: 50px; width: auto;"
+                                 alt="Viewer link">
+                          </div>
+                          <div class="file-name" #fileTitle>{{col.Title}}</div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="UserFolderFiles">
+                    <div *ngIf="visibleNodataFound" class=" no-data">
+                      <div>{{'no_records_found' | translate}}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="uploadContent">
+                  <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                  <div class="uploadFolderContent">
+                    <div class="contentText">
+                      <span class="left"> Drop file to upload them directly to : </span>
+                      <br>
+                      <span class="right">{{CurrentFolderSlugLabel}}</span>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </p-fileUpload>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

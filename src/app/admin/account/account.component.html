@@ -1,0 +1,8 @@
+<div *ngIf="type === 'profile' && formData">
+  <app-form-builder [isAccount]=true
+                    [formData]="formData"
+                    [fieldCollectionService]="fieldCollectionService"
+                    [formMode]="FormModeEnum.Use"
+                    (formBuilt)="onFormBuilt()"></app-form-builder>
+  <p-button [label]="'save' | translate" (click)="onSaveClicked()" [icon]="'pi pi-save'"></p-button>
+</div>

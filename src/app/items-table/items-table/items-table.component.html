@@ -1,0 +1,94 @@
+<p-table *ngIf="tableData" #dt
+        [value]="tableData.rows"
+        [paginator]=true
+        [rows]="itemsPerPage"
+        [responsive]="true"
+        selectionMode="selectionMode"
+        [(selection)]="rowsSelected"
+        dataKey="itemSlug"
+        (sortFunction)="customSort($event)"
+        [customSort]="true"
+        [lazy]="loadLazy"
+        (onLazyLoad)="onLazyLoad($event)"
+        [lazyLoadOnInit]="false"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="'page-report-template' | translate "
+        [totalRecords]="tableData.totalItemsCount"
+        [showLoader]="true"
+        >
+
+  <!-- header -->
+  <ng-template pTemplate="caption" *ngIf="hasHeader">
+    <div class="table-header">
+      {{tableData.getDatasetTitle()}}
+
+      <div class="table-header-right">
+        <div *ngIf="hasQuickAddButton">
+          <p-button [icon]="'pi pi-plus-circle'" (click)="onQuickAddClicked()" [style]="{'margin-right': '10px'}"></p-button>
+        </div>
+        <div *ngIf="isDateFilterVisible">
+          <p-calendar (onSelect)="onDateSelected($event, 'from')"  dateFormat="dd.mm.yy" placeholder="{{'created-from' | translate}}" [appendTo]="'body'"></p-calendar>
+        </div>
+        <div *ngIf="isDateFilterVisible">
+          <p-calendar (onSelect)="onDateSelected($event, 'until')" dateFormat="dd.mm.yy" placeholder="{{'created-to' | translate}}" [appendTo]="'body'"></p-calendar>
+        </div>
+        <div class="p-inputgroup" [ngClass]="'global-search-input'">
+          <span class="p-inputgroup-addon">
+            <i class="pi  pi-calendar p-pi-filter" (click)="onShowDateFilterClicked()"></i></span>
+          <input type="text" pInputText placeholder="{{'search-items' | translate}}" [(ngModel)]="searchTerm" (input)="onSearchChanged($any($event.target).value)">
+        </div>
+      </div>
+
+    </div>
+  </ng-template>
+
+  <!-- table header -->
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 3rem">
+          <p-tableHeaderCheckbox *ngIf="multiple"></p-tableHeaderCheckbox>
+      </th>
+      <th style="width: 8rem"></th>
+
+      <th *ngFor="let col of tableData.cols" [pSortableColumn]="col.fieldSlug">
+        {{col.label}}
+        <p-sortIcon style="color: #6c757d;" [field]="col.fieldSlug" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+
+  <!-- table body -->
+  <ng-template pTemplate="body" let-row let-rowIndex="rowIndex" let-columns="tableData.cols">
+    <tr class="p-selectable-row" >
+      <td>
+        <p-tableCheckbox *ngIf="multiple" [value]="row" (click)="$event.stopPropagation()"></p-tableCheckbox>
+        <p-tableRadioButton *ngIf="!multiple" [value]="row" (click)="$event.stopPropagation()"></p-tableRadioButton>
+      </td>
+      <td>
+        <button pButton *ngIf="hasEditButtons" type="button" (click)="onEditItemClicked(row.itemSlug)" class="p-button-success" icon="pi pi-pencil" [pTooltip]="'edit'" style="margin-right: .5em"></button>
+        <button pButton *ngIf="hasDeleteButtons" type="button" (click)="onDeleteItemClicked(row.itemSlug)" class="p-button-warning" icon="pi pi-trash" [pTooltip]="'delete'" style="margin-right: .5em"></button>
+      </td>
+
+      <td *ngFor="let col of tableData.cols" (click)="onRowClicked(row.itemSlug)" class="table-td" [title]="row.data[col.fieldSlug]">
+        <span class="p-column-title">{{col.label}}</span>
+        <!--
+        <div  *ngIf="col.fieldType === 'uploadfield' && row.data[col.fieldSlug] && row.data[col.fieldSlug][0].ThumbnailURL" class="">
+            <img _ngcontent-oqx-c11 class="p-shadow-4" width="50" src="{{ row.data[col.fieldSlug][0].ThumbnailURL }}" alt="{{ row.data[col.fieldSlug][0].Title }}">
+        </div>
+        -->
+        <span *ngIf="col.fieldType !== 'uploadfield'">{{row.data[col.fieldSlug]}}</span>
+      </td>
+    </tr>
+  </ng-template>
+
+  <!-- table summary -->
+  <ng-template pTemplate="summary">
+    <div> <button pButton *ngIf="hasDeleteButtons" [disabled]="rowsSelected.length === 0" type="button"
+        (click)="onMarkedItemsDeleteClicked()"
+        [label]="getMultiDeleteBtnCaption()" class="p-button-warning" icon="pi pi-trash" [pTooltip]="'delete'"></button></div>
+  </ng-template>
+</p-table>
+
+<p-dialog [visible]="isQuickAddDialogVisible">
+ <!-- <app-item></app-item>-->
+</p-dialog>

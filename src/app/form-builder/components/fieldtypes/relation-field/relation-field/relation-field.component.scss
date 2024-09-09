@@ -1,0 +1,17 @@
+:host::ng-deep .item-select-dialog {
+    width: 80vw;
+}
+
+.show-dialog-btn {
+    margin-left: 5px;
+}
+
+.items-selected-text {
+    width: calc(100% - 60px);
+    display: inline-block;
+    vertical-align: top;
+    border: 1px solid silver;
+    padding: 5px;
+    min-height: 31px;    
+    font-weight: normal;
+}

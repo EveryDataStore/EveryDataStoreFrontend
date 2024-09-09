@@ -1,0 +1,14 @@
+<p-dialog header="{{ 'delete-task' | translate }}" (onHide)="onHide()" [draggable]="false" [(visible)]="visible"
+          [style]="{width: '300px'}"
+          [modal]="true" [baseZIndex]="10000">
+  <p>
+    {{ 'confirm.really-delete-item' | translate }}
+  </p>
+  <div style="margin-top: 20px;">
+    <button pButton type="button" label="{{ 'yes' | translate }}" (click)="accept()" class="p-button-danger"
+            style="margin-right: 5px;"></button>
+    <button pButton (click)="dismiss()" type="button" label="{{ 'no' | translate }}"
+            class="p-button-raised" style="margin-right: 5px;"></button>
+
+  </div>
+</p-dialog>

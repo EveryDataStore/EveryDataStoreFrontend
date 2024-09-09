@@ -1,0 +1,55 @@
+{
+    "Start": "Starten",
+
+    "StorageSize": "Speicherplatzgröße",
+    "DataStore": "Mandanten",
+    "Member": "Benutzer",
+    "RecordSet": "Datenbanken",
+    "RecordSetItem": "Datensätze",
+    "Workflow": "Workflows",
+    "FreeApp": "Freie Apps",
+    "UploadFileSize": "Upload-Dateigröße",
+    "UploadFileNumber": "Upload-Dateianzahl",
+    "FileExtension": "File-Extensions",
+    "VersionHistory": "Versions-History",
+    "VersionRollback": "Versions-Rollback",
+    "RecoverData": "Recover Data",
+    "Support": "Support",
+    "Backup": "Backup",
+
+    "buy-now": "Jetzt kaufen",
+    "start": "Start",
+    "talk-with-us": "Reden Sie mit uns",    
+    "Pricing": "Preise",
+    "Features": "Features",
+    "per month": "Pro Monat",
+    "per year": "Pro Jahr",  
+    "free": "Kostenlos",
+    "Plan":"Plan",
+    "Imprint":"Impressum",
+    "Terms": "AGBs",
+    "Privacy": "Datenschutz",
+    "Get_Started":"Kostenlos loslegen",
+
+    "First Name": "Vorname",
+    "Surname": "Nachname",
+    "Phone": "Telefonnummer",
+    "Email": "Email",
+    "Salutation": "Anrede",
+    "Payment": "Bezahlung",
+
+    "User Name": "Benutzername",
+    "Password": "Passwort",
+    "Confirm Password": "Passwort bestätigen",
+    "Sign In": "Login",
+    "Submit": "Abschicken",
+
+    "Error": {
+        "required": "Dieses Feld muss ausgefüllt werden",
+        "minSixCharacters": "Dieses Feld muss mind. 6 Zeichen lang sein",
+        "invalidPassword": "Das Passwort muss mind. aus einer Ziffer, einem Kleinbuchstaben, einem Großbuchstaben und einem Sonderzeichen bestehen",
+        "invalidEmail": "Email-Adresse ungültig",
+        "passwordsDontMatch": "Die Passwörter müssen übereinstimmen",
+        "noSpaceAndSpecialChars": "Darf keine Leer- oder Sonderzeichen enthalten"
+    }
+}

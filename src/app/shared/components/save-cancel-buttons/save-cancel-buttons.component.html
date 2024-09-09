@@ -1,0 +1,29 @@
+<button *ngIf="showButtons && showSaveButton" pButton [label]="saveButtonLabel"
+        [disabled]="disabled"
+        (click)="onSaveClicked(saveTypeEnum.SaveAndStay)"
+        [icon]="'pi pi-save'" class="p-button-primary"></button>
+
+<button *ngIf="showButtons && showSaveAndExitButton" pButton [label]="saveAndExitButtonLabel"
+        [disabled]="disabled" style="margin-left: 5px;"
+        (click)="onSaveClicked(saveTypeEnum.SaveAndExit)"
+        [icon]="'pi pi-save'"></button>
+
+<button *ngIf="showButtons && showSaveAndNewButton" pButton [label]="saveAndNewButtonLabel"
+        [disabled]="disabled" style="margin-left: 5px;"
+        (click)="onSaveClicked(saveTypeEnum.SaveAndNew)"
+        [icon]="'pi pi-save'"></button>
+
+<button *ngIf="showCopyButton" pButton [label]="copyButtonLabel" [class]="'p-button-help'"
+        [disabled]="disabled" style="margin-left: 5px;"
+        (click)="onSaveClicked(saveTypeEnum.SaveAndCopy)"
+        [icon]="'pi pi-copy'"></button>
+
+<button *ngIf="showDeleteButton && showButtons" pButton [label]="deleteButtonLabel"
+        [disabled]="disabled" style="margin-left: 20px;margin-right: 5px"
+        (click)="onDeleteClicked()"
+        [icon]="'pi pi-trash'" class="p-button-warning"></button>
+
+<button *ngIf="showButtons" pButton type="button" icon="fa fa-times" [label]="cancelButtonLabel"
+        (click)="onCancelClicked()" style="margin-left: 5px;margin-right: 5px"
+        [ngStyle]="{'float': 'right'}"
+        class="p-button-secondary"></button>

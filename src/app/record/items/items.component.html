@@ -1,0 +1,169 @@
+<div style="clear: both;"></div>
+
+<!-- Calendar View -->
+<p-table *ngIf="calendarView">
+    <!-- table caption -->
+    <ng-template pTemplate="caption">
+        <div class="table-header">
+            <div class="grid">
+                <div class="col-12 md:col-6 lg:col-6 header-buttons-left">
+                    <a [ngClass]="langDir=='rlt'?'a-content':''" href="{{dashboardPath}}"><i class="pi pi-home"></i> {{'dashboard' | translate}}</a> {{recordTitle}}
+                </div>
+                <div class="col-12 md:col-6 lg:col-6 header-buttons-right">
+                    <button pButton *ngIf="permissions.canCreate" (click)="onNewRecordItemClicked()" icon="pi pi-plus-circle"
+                            label="{{'new-item' | translate}}"
+                            [class]="'new-item-btn new-item-btn-cal'"></button>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="summary">
+        <full-calendar [options]="calendarconfig"></full-calendar>
+    </ng-template>
+</p-table>
+
+<!-- Table View -->
+<p-table *ngIf="!calendarView"
+         #dt [value]="tableData.rows"
+         [paginator]="true"
+         [rows]="itemsPerPage"
+         [rowsPerPageOptions]="[itemsPerPage, 20, 50, 70, 100]"
+         [totalRecords]="recordItemsCount"
+         [first]="first"
+         [lazy]="true"
+         (onLazyLoad)="loadItemsLazy($event)"
+         [responsive]="true"
+         selectionMode="multiple"
+         [(selection)]="rowsSelected"
+         [showCurrentPageReport]="true"
+         [currentPageReportTemplate]="'page-report-template' | translate "
+         dataKey="itemSlug"
+         >
+
+    <!-- table caption -->
+    <ng-template pTemplate="caption">
+        <div class="table-header">
+            <div class="grid">
+                <div class="col-12 md:col-6 lg:col-6 header-buttons-left">
+                    <a [ngClass]="langDir=='rlt'?'a-content':''" href="{{dashboardPath}}"><i class="pi pi-home"></i> {{'dashboard' | translate}}</a> {{recordTitle}}
+                </div>
+
+                <div class="col-12 md:col-6 lg:col-6 header-buttons-right">
+
+                    <div class="table-header-right" >
+                        <div *ngIf="showFilter">
+                            <p-calendar (onSelect)="onCreatedFrom($event)" dateFormat="dd.mm.yy"
+                                        placeholder="{{'created-from' | translate}}" [appendTo]="'body'"></p-calendar>
+                        </div>
+                        <div *ngIf="showFilter">
+                            <p-calendar (onSelect)="onCreatedTo($event)" dateFormat="dd.mm.yy"
+                                        placeholder="{{'created-to' | translate}}" [appendTo]="'body'"></p-calendar>
+                        </div>
+                        <div class="p-inputgroup" [ngClass]="'global-search-input'" style="float: right; width: 100%; padding: 0">
+                            <span class="p-inputgroup-addon" [ngClass]="langDir=='rtl'?'p-inputgroup-addon-custom':''">
+                                <i class="pi  pi-calendar p-pi-filter" (click)="onShowFilter()"></i></span>
+                            <input type="text" pInputText placeholder="{{'search-items' | translate}}" (input)="search($any($event.target).value)">
+                        </div>
+                        <div class="table-header-right-buttons">
+                            <button pButton *ngIf="permissions.canCreate" (click)="onNewRecordItemClicked()" icon="pi pi-plus-circle"
+                                    label="{{'new-item' | translate}}"
+                                    [class]="'new-item-btn'"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- table header -->
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 3rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th style="width: 8rem">
+            <button pButton *ngIf="permissions.canCreate" (click)="onNewRecordItemClicked()" icon="pi pi-plus-circle" label="{{'new-item' | translate}}"
+                    [class]="'new-item-table-btn'"></button>
+        </th>
+
+        <th *ngFor="let col of tableData.cols" [pSortableColumn]="col.label">
+            {{col.label}}
+        <p-sortIcon style="color: #6c757d;" [field]="col.label" ariaLabel="Activate to sort"
+                    ariaLabelDesc="Activate to sort in descending order"
+                    ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+        </th>
+        </tr>
+    </ng-template>
+
+    <!-- table body -->
+    <ng-template pTemplate="body" let-row let-rowIndex="rowIndex" let-columns="tableData.cols">
+        <tr class="p-selectable-row" >
+            <td>
+        <p-tableCheckbox [value]="row" (click)="$event.stopPropagation()"></p-tableCheckbox>
+        </td>
+        <td>
+            <button pButton *ngIf="permissions.canEdit" type="button" (click)="onEditItemClicked(row.itemSlug)" class="p-button-success" icon="pi pi-pencil" [pTooltip]="'edit'" style="margin-right: .5em"></button>
+            <button pButton *ngIf="permissions.canDelete" type="button" (click)="onDeleteItemClicked(row.itemSlug)" class="p-button-warning" icon="pi pi-trash" [pTooltip]="'delete'" style="margin-right: .5em"></button>
+        </td>
+
+        <td *ngFor="let col of tableData.cols" (click)="onRowClicked(row.itemSlug)">
+            <span class="p-column-title">{{col.label}}</span>
+
+            <div  *ngIf="col.fieldTextType === 'color' && row[col.fieldSlug]" class="">
+                <span class="color-field" [ngStyle]="{'width':'65px', 'display':'block','padding':'5px', 'color':'#fff', 'background-color': row[col.fieldSlug]}">{{row[col.fieldSlug]}}</span>
+            </div>
+            <!--{{row[col.fieldSlug][0] | json}}-->
+            <span
+                *ngIf="col.fieldType !== 'uploadfield' && col.fieldTextType !== 'color'">{{row.data[col.fieldSlug]}}</span>
+            <div
+                *ngIf="col.fieldType == 'uploadfield' && col.fieldTextType !== 'color'">
+                <ul class="list-record-item-media">
+                     <li *ngFor="let mediaItem of row.data[col.fieldSlug] | slice:0:5; let i=index">
+                            <a target="_blank" (click) = "openFileViewer(mediaItem)">
+                                <img *ngIf="mediaItem.ThumbnailURL"  _ngcontent-oqx-c11 class="p-shadow-4" width="50" src="{{ mediaItem.ThumbnailURL }}" alt="{{ mediaItem.Title }}">
+                            </a>
+                        </li>
+                </ul>
+            </div>
+        </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="footer" *ngIf="footerTableData">
+         <tr>
+            <td style="width: 3rem">
+        </td>
+        <td style="width: 8rem"></td>
+
+        <td *ngFor="let col of footerTableData">
+            {{col.value}}
+        </td>
+        </tr>
+    </ng-template>
+    <!-- table summary -->
+    <ng-template pTemplate="summary">
+        <div style="display: flex;">
+            <div style="margin-right: 5px;margin-left: 5px;">
+                <button pButton  *ngIf="permissions.canDelete" [disabled]="rowsSelected.length === 0" type="button" (click)="onMarkedItemsDeleteClicked()"
+                        [label]="getMultiDeleteBtnCaption()" class="p-button-warning" icon="pi pi-trash"
+                        [pTooltip]="'delete'"></button>
+            </div>
+            <div style="margin-right: 5px;margin-left: 5px;">
+                <p-splitButton label="{{'export' | translate}}" [model]="exportItems" styleClass="p-button-info"></p-splitButton>
+            </div>
+            <div style="margin-right: 5px;margin-left: 5px;">
+                <p-fileUpload #fileUpload mode="basic" accept=".json,.csv" customUpload="true" (uploadHandler)="import($event)"
+                              chooseLabel="{{'import' | translate}}"></p-fileUpload>
+            </div>
+        </div>
+    </ng-template>
+</p-table>
+
+
+
+<!--<p-dialog *ngIf="downloadURL" [(visible)]="isVisibleDownloadDialog" [closable]="true"
+          [style]="{'width': '50%'}"
+          [modal]="true">
+    <h3>{{'download_file' | translate}}</h3>
+    <a [href]="downloadURL" download="downloadURL"  class="link-download">{{'download' | translate}}</a>
+
+</p-dialog>-->

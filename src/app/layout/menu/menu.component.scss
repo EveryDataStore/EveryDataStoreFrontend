@@ -1,0 +1,39 @@
+.right-menu {
+    float: right;
+    margin: 0px;
+}
+
+.left-menu {
+    float: left;
+}
+
+.layout-menubar-logo {
+    vertical-align: top;
+    float: left;
+}
+
+.layout-menu-container {
+    padding-right: 5px !important;
+}
+
+
+
+.list-recorditem-button{
+    display: inline-block;
+}
+
+.list-recorditem-button li{
+    display: inline-block;
+}
+
+@media screen and (max-width: 896px) {
+    .right-menu, .left-menu {
+        float: none !important;
+    }
+
+    .right-menu {
+        margin-top: 20px;
+        border-top: 1px solid rgb(206, 205, 205);
+    }
+}
+

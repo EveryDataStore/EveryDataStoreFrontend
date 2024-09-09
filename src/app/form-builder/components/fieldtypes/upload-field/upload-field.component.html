@@ -1,0 +1,48 @@
+<div _ngcontent-bpg-c15="" class="field-label ng-star-inserted" *ngIf="!inBuildMode">{{label}}</div>
+  <p-fileUpload #fileUpload
+                [name]="formMetaField.name"
+                customUpload="true"
+                [showUploadButton]="false"
+                [showCancelButton]="false"
+                (onRemove)="onRemove(fileUpload)"
+                
+                (onClear)="onRemove(fileUpload)"
+                (uploadHandler)="onUpload($event, fileUpload)"
+                [auto]="true"
+                [multiple]="formMetaField.uploadMultiple === 'true' ? 'multiple' : false"
+                [fileLimit]="formMetaField.uploadMaxFile ? 'formMetaField.uploadMaxFile ' : 1"
+                [maxFileSize]= "0"
+                [accept]="formMetaField.uploadAccepts ? formMetaField.uploadAccepts : ''">
+    <ng-template pTemplate="content">
+      <div>
+        <div *ngIf="show">
+          <div class="p-fileupload-row" *ngFor="let file of uploadedFiles">
+            <div *ngIf="file?.objectURL?.changingThisBreaksApplicationSecurity">
+              <img [src]="file?.objectURL?.changingThisBreaksApplicationSecurity | safe: 'url'" width="50">
+            </div>
+            <div *ngIf="!file?.objectURL?.changingThisBreaksApplicationSecurity">
+              {{file.name}}
+            </div>
+          </div>
+        </div>
+      </div>
+       <div *ngIf="value">
+           <div class="ng-star-inserted" *ngFor="let file of value">
+           <div class="p-fileupload-row ng-star-inserted" >
+              <div *ngIf="file.ThumbnailURL" (click)="onFileClicked(file)">
+                <img [src]="file.ThumbnailURL" width="50" height="auto" class="ng-star-inserted">
+              </div>
+              <div *ngIf="file.ThumbnailURL" (click)="onFileClicked(file)">{{ file.Name }}</div>
+              <div (click)="onFileClicked(file)">{{ file.Size }}</div>
+              <div><button  (click)="deleteFile(file.Slug)" icon="pi pi-trash" pbutton="" type="button" ng-reflect-icon="pi pi-trash" class="p-button p-widget p-button-warning p-state-default p-corner-all p-button-icon-only __web-inspector-hide-shortcut__"><span aria-hidden="true" class="p-button-icon-left p-clickable pi pi-trash"></span><span aria-hidden="true" class="p-button-text p-clickable"></span></button></div>
+           </div>
+           </div>
+      </div>
+    </ng-template>
+  </p-fileUpload>
+  <span *ngIf="formMetaField.required && isRequiredShowErr"
+        style="color: red;">Field is required</span>
+        <div *ngIf="value">
+    <br>
+  </div>
+  <app-view-file-dialog #viewFileDialog (fileDeleted)="onFileDeleted($event)"></app-view-file-dialog>

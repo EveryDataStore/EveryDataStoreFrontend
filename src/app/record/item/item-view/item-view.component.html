@@ -1,0 +1,26 @@
+<p-table [value]="data">
+    <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+        <ng-container *ngIf="row.showInViewMode">
+            <tr [pSelectableRow]="row" [pSelectableRowIndex]="rowIndex">
+                <td style="width: 200px;">{{row.label}}</td>
+                <td>
+                    <!-- Upload field-->
+                    <div *ngIf="row.type === 'uploadfield'" class="">
+                    <ul class="list-record-item-media">
+                        <li *ngFor="let mediaItem of row.value">
+                            <a target="_blank" (click) = "openFileViewer(mediaItem)">
+                                <img *ngIf="mediaItem.ThumbnailURL"  _ngcontent-oqx-c11 class="p-shadow-4" width="50" src="{{ mediaItem.ThumbnailURL }}" alt="{{ mediaItem.Title }}">
+                            </a>
+                        </li>
+                    </ul>
+                    </div>
+                    
+                    <!-- Normal value-->
+                    <span *ngIf="row.type !== 'uploadfield'">{{row.value}}</span>
+                </td>   
+            </tr>
+        </ng-container>
+    </ng-template>
+</p-table>
+
+ <app-view-file-dialog #viewFileDialog></app-view-file-dialog>

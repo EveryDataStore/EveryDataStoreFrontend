@@ -1,0 +1,22 @@
+:host ::ng-deep .logo-mobile{
+    width: auto;
+    height: 35px;
+    position: absolute;
+    top:10px;
+    right: 20px;
+}
+
+::ng-deep .layout-wrapper.layout-topbar-blue .layout-topbar {
+    background-color:#fff;
+}
+
+::ng-deep .layout-wrapper.layout-topbar-blue .layout-topbar .layout-topbar-icon{
+        color: #0f97c7;
+}
+.logo-mobile-rtl{
+    left: 20px;
+    right:auto;
+}
+.layout-right-panel-button-rtl{
+    float: left !important;
+}

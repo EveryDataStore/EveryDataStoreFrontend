@@ -1,0 +1,26 @@
+<div style="display: flex; margin-bottom: 2px;">
+    <p-dropdown [options]="fieldItemsActualRecord" 
+                [(ngModel)]="fieldIdSelectedActualRecord"
+                [appendTo]="'body'" 
+                [ngStyle]="{'flex-grow': 1}"
+                [placeholder]="'choose' | translate" ></p-dropdown>
+    
+    <p-dropdown [options]="fieldItemsTarget" 
+                [(ngModel)]="fieldIdSelectedTarget"
+                [appendTo]="'body'" 
+                [ngStyle]="{'flex-grow': 1, 'margin-left': '5px'}"
+                [placeholder]="'choose' | translate" ></p-dropdown>      
+                
+    <p-button   [label]="'add-display-field' | translate" 
+                [disabled]="fieldIdSelectedActualRecord === null || fieldIdSelectedTarget === null"
+                [ngStyle]="{'margin-left': '5px'}"
+                [icon]="'fa fa-plus'"
+                (onClick)="onAddBtnClicked()"></p-button>
+</div>
+
+<div *ngFor="let fieldMapping of fieldMappings" style="margin-bottom: 3px; margin-top: 3px;">
+    <p-button [icon]="'fa fa-minus'"
+            (onClick)="onRemoveBtnClicked(fieldMapping)"></p-button>
+
+    {{fieldMapping[0].label}} &#10132; {{fieldMapping[1].label}}
+</div>

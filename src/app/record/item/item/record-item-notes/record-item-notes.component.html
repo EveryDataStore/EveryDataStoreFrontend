@@ -1,0 +1,33 @@
+<app-is-active-app-message [isActiveApp]="isNoteManagerActive" [appName]="'Every Note Manager'"></app-is-active-app-message>
+
+<div *ngIf="isNoteManagerActive" >
+<!-- Add Notes -->
+<div class="add-notes-container">
+  <div class="textarea">
+    <textarea [(ngModel)]="note" pInputTextarea placeholder="Add note here" cols="80" rows="10"></textarea>
+  </div>
+  <div class="button">
+    <button (click)="addNote()" pButton label="{{ 'Add Note' | translate }}"></button>
+  </div>
+</div>
+
+<!-- Note list -->
+<div class="ui-grid" *ngIf="notes">
+  <div class="note-list-container-note" *ngFor="let note of notes">
+    <div class="note-list-container-note-header">
+      <div class="note-list-container-note-header-name">
+        {{ note?.Created }}
+      </div>
+      <div class="note-list-container-note-header-created-date">
+        {{note?.CreatedByFullname }}
+      </div>
+      <div class="note-list-container-note-header-actions">
+        <i (click)="deleteNote(note.Slug)" class="pi pi-trash"></i>
+      </div>
+    </div>
+    <div class="note-list-container-note-content">
+      {{ note?.Content }}
+    </div>
+  </div>
+</div>
+</div>

@@ -1,0 +1,228 @@
+<p-dialog #dialog
+    [(visible)]="showDialog"
+    [header]="fileData?.Name"
+    [closable]="true"
+    (onShow)="showDialogMaximized($event)"
+    [style]="{width: '95%'}"
+    [modal]="true"
+    (onHide)="showDialog = false">
+    <div class="grid view-file-dialog">
+        <div class="col-12" [ngClass]="detailDialogDatapanelVisible ? 'md:col-8 lg:col-8' : ''">
+            <div class="dialog-left" style="position: relative;">
+                <p-tabView>
+                    <p-tabPanel header="{{'document' | translate}}">
+                        <ng-container *ngIf="loaded">
+                            <div *ngIf="isFile">
+                                <ngx-doc-viewer id="print-section" [url]="fileLink" (loaded)="onDocumentLoaded()" viewer="url"
+                                                style="width:100%;height: calc(100vh - 125px);">
+                                </ngx-doc-viewer>
+                            </div>
+                            <div *ngIf="!isFile" id="printimage" style="width:100%;height: calc(100vh - 125px);">
+                                <img [src]="fileLink">
+                            </div>
+                        </ng-container>
+                    </p-tabPanel>
+                    <p-tabPanel header="{{'notes' | translate}}">
+                        <form (ngSubmit)="addNewNote()" *ngIf="fileData">
+                            <input type="text" style="width: 100%;" pInputText [ngModelOptions]="{standalone: true}"
+                                   [(ngModel)]="newNoteText" placeholder="{{'add-new-note-here' | translate}}" />
+                            <button type="submit" pButton label="{{'add-note' | translate}}"
+                                    class="p-button-primary mt-3"></button>
+                        </form>
+                        <ul class="noteList" *ngIf="fileData">
+                            <li *ngFor="let note of fileData.Notes">
+                                {{note.Content}}
+                                <p>
+                                    {{note.CreatedBy}}
+                                    <span>{{note.Created}}
+                                        <i class="pi pi-trash" (click)="deleteNote(note.Slug)"></i>
+                                    </span>
+                                </p>
+                            </li>
+                        </ul>
+                    </p-tabPanel>
+
+
+                    <p-tabPanel header="{{'versions' | translate}}" *ngIf="fileData">
+                        <p-table #dt [value]="fileData.Versions" [totalRecords]="fileData.Versions.length"
+                                 class="tblVersions">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>{{'name' | translate}}</th>
+                                    <th>{{'title' | translate}}</th>
+                                    <th>{{'version' | translate}}</th>
+                                    <th>{{'firstupload' | translate}}</th>
+                                    <th>{{'lastchanged' | translate}}</th>
+                                    <th>{{'changedby' | translate}}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-version>
+                                <tr>
+                                    <td>
+                                        {{version.Name}}
+                                    </td>
+                                    <td>
+                                        {{version.Title}}
+                                    </td>
+                                    <td>
+                                        {{version.Version}}
+                                    </td>
+                                    <td>
+                                        {{version.Created}}
+                                    </td>
+                                    <td>
+                                        {{version.LastEdited}}
+                                    </td>
+                                    <td>
+                                        {{version.UpdatedBy}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+
+                        </p-table>
+                    </p-tabPanel>
+                </p-tabView>
+              <div class="show-data-panel-button">
+                <p-button [label]="detailDialogDatapanelVisible ? ('hide-editfields' | translate) : ('show-editfields' | translate)"
+                          [icon]="detailDialogDatapanelVisible ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                          severity="secondary"
+                          (onClick)="detailDialogDatapanelVisible = !detailDialogDatapanelVisible"></p-button>
+              </div>
+            </div>
+        </div>
+        <div *ngIf="detailDialogDatapanelVisible" class="p-col-12 p-md-4 p-lg-4">
+            <div Class="dialog-right">
+                <div class="top-navigation">
+                    <ul class="controls" *ngIf="fileData">
+                        <li (click)="deleteFile()" title="{{'delete' | translate}}">
+                            <a href="javascript:;">
+                                <i class="pi pi-trash"></i>
+                            </a>
+                        </li>
+                        <li title="{{'download' | translate}}">
+                            <a [href]="fileData.Link" target="_blank">
+                                <i class="pi pi-download"></i>
+                            </a>
+                        </li>
+                        <li title="{{'print' | translate}}" (click)="printFile()">
+                            <a href="javascript:;">
+                                <i class="pi pi-print"></i>
+                            </a>
+                        </li>
+                        <li title="{{'previous' | translate}}"
+                            (click)="loadFileData(fileData.PrevFileSlug)">
+                            <a href="javascript:;">
+                                <i class="pi pi-arrow-circle-left"></i>
+                            </a>
+                        </li>
+                        <li title="{{'next' | translate}}"
+                            (click)="loadFileData(fileData.NextFileSlug)">
+                            <a href="javascript:;">
+                                <i class=" pi pi-arrow-circle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="main-content" *ngIf="fileData">
+
+                    <p-tabView>
+                        <p-tabPanel header="{{'main' | translate}}">
+
+                            <span class="p-float-label float-margin">
+                                <input id="float-Title" class="fullWidth" type="text" [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="fileData.Title" size="30" pInputText>
+                                <label [ngClass]="langDir=='rlt'?'right-0-5':''" for="float-Title">{{'title' | translate}}</label>
+                            </span>
+                            <span class="p-float-label float-margin">
+                                <input id="float-Name" class="fullWidth" type="text" [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="fileData.Name" size="30" pInputText>
+                                <label [ngClass]="langDir=='rlt'?'right-0-5':''" for="float-Name">{{'name' | translate}}</label>
+                            </span>
+                            <span class="p-float-label float-margin">
+                                <input id="float-Slug" class="fullWidth" type="text" disabled
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="fileData.Slug" size="30" pInputText>
+                                <label [ngClass]="langDir=='rlt'?'right-0-5':''" for="float-Slug">{{'Slug' | translate}}</label>
+                            </span>
+                            <span class="p-float-label float-margin">
+                                <input id="float-First-uploaded" class="fullWidth" type="text" disabled
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="fileData.Created" size="30" pInputText>
+                                <label [ngClass]="langDir=='rlt'?'right-0-5':''" for="float-First-uploaded">{{'firstupload' | translate}}</label>
+                            </span>
+                            <span class="p-float-label float-margin">
+                                <input id="float-Last-changed" class="fullWidth" type="text" disabled
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="fileData.LastEdited" size="30"
+                                        pInputText>
+                                <label [ngClass]="langDir=='rlt'?'right-0-5':''" for="float-Last-changed">{{'lastchang' | translate}}</label>
+                            </span>
+                            <span class="p-float-label float-margin">
+                                <input id="float-Created-By" class="fullWidth" type="text" disabled
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="fileData.CreatedBy" size="30"
+                                        pInputText>
+                                <label [ngClass]="langDir=='rlt'?'right-0-5':''" for="float-Created-By">{{'createdby' | translate}}</label>
+                            </span>
+                            <span class="p-float-label float-margin">
+                                <input id="float-Changed-By" class="fullWidth" type="text" disabled
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="fileData.UpdatedBy" size="30"
+                                        pInputText>
+                                <label [ngClass]="langDir=='rlt'?'right-0-5':''" for="float-Changed-By">{{'changedby' | translate}}</label>
+                            </span>
+                            <span class="p-float-label float-margin">
+                                <input id="float-Filename" class="fullWidth" type="text" disabled
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="fileData.Filename" size="30"
+                                        pInputText>
+                                <label [ngClass]="langDir=='rlt'?'right-0-5':''" for="float-Filename">{{'filename' | translate}}</label>
+                            </span>
+                            <span class="p-float-label float-margin">
+                                <input id="float-LINK" class="fullWidth" type="text" disabled
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="fileData.Link" size="30" pInputText>
+                                <label [ngClass]="langDir=='rlt'?'right-0-5':''" for="float-LINK">{{'link' | translate}}</label>
+                            </span>
+
+                        </p-tabPanel>
+                        <p-tabPanel header="{{'permissions' | translate}}">
+
+                            <div class="grid" style="margin-bottom:10px">
+                                <div class="col-12">
+                                    <p-radioButton name="group1" value="Anyone" [ngModelOptions]="{standalone: true}"
+                                                    [(ngModel)]="fileData.CanViewType" (click) = "onPermissionTypeChanged(false)" label="{{'anyone' | translate}}"
+                                                    inputId="opt1">
+                                    </p-radioButton>
+                                </div>
+                                <div class="col-12">
+                                    <p-radioButton name="group1" value="LoggedInUsers" (click) = "onPermissionTypeChanged(false)" [ngModelOptions]="{standalone: true}"
+                                                    [(ngModel)]="fileData.CanViewType" label="{{'logged_in_users' | translate}}"
+                                                    inputId="opt2">
+                                    </p-radioButton>
+                                </div>
+                                <div class="col-12">
+                                    <p-radioButton name="group1" value="OnlyTheseUsers" (click) = "onPermissionTypeChanged(true)" [ngModelOptions]="{standalone: true}"
+                                                    [(ngModel)]="fileData.CanViewType" label="{{'only_these_groups' | translate}}"
+                                                    inputId="opt3">
+                                    </p-radioButton>
+                                </div>
+                            </div>
+                            <div *ngIf="showPermissionGroups || fileData.CanViewType == 'OnlyTheseUsers'" class="multiSelect-section">
+                                <label>{{'viewer_groups' | translate}}</label>
+                                <p-multiSelect [options]="groups" [style]="{width:'100%'}"
+                                                [showToggleAll]="false" [filter]="false" [ngModelOptions]="{standalone: true}"
+                                                [(ngModel)]="fileData.ViewerGroupSlugs">
+                                </p-multiSelect>
+                            </div>
+                            <div *ngIf="showPermissionGroups || fileData.CanViewType == 'OnlyTheseUsers'" class="multiSelect-section">
+                                <label>{{'editor_groups' | translate}}</label>
+                                <p-multiSelect [options]="groups" [style]="{width:'100%'}"
+                                                [showToggleAll]="false" [filter]="false" [ngModelOptions]="{standalone: true}"
+                                                [(ngModel)]="fileData.EditorGroupSlugs">
+                                </p-multiSelect>
+                            </div>
+                        </p-tabPanel>
+                    </p-tabView>
+                    <button pButton type="submit" (click)="onSaveFormClicked()" label="{{'save' | translate}}" class="p-button-info mt-3"></button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+

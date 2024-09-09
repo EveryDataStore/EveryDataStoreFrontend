@@ -1,0 +1,171 @@
+<p-table>
+  <ng-template pTemplate="caption">
+    <div class="table-header" *ngIf="!isQuickAddForm">
+      <div class="grid">
+        <div class="col-12 md:col-6 lg:col-6 header-buttons-left">
+          <div *ngIf="recordItemSlug">
+            <a [ngClass]="langDir=='rlt'?'a-content':''" href="{{dashboardPath}}"><i class="pi pi-home"></i>{{'dashboard' | translate}}
+            </a><a [ngClass]="langDir=='rlt'?'a-content':''" (click)="onRecordLinkClicked()"> {{ recordTitle }} </a>
+            <span class="object-slug">{{ recordItemSlug | slice:0:10 }} ...</span>
+          </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-6 header-buttons-right" *ngIf="!isQuickAddForm">
+          <ul class="list-recorditem-button">
+            <li *ngIf="printButtonItems && permissions.canPrint">
+              <p-splitButton [label]="'print' | translate" icon="pi pi-print" [model]="printButtonItems"
+                class="p-button-primary print-button"></p-splitButton>
+            </li>
+            <li *ngIf="!editMode && permissions.canEdit">
+              <p-button [label]="'edit' | translate" [icon]="'pi pi-pencil'" (click)="onEditBtnClicked()"></p-button>
+            </li>
+            <li *ngIf="type && type === WORKFLOW">
+              <p-button (click)="editTaskModalOpen()" [label]="'Edit Task' | translate"></p-button>
+            </li>
+            <li *ngIf="type && type === WORKFLOW">
+              <p-button *ngIf="type && type === WORKFLOW" (click)="deleteTaskOpenModal()"
+                [label]="'Delete Task' | translate"></p-button>
+            </li>
+            <li>
+              <p-button (click)="onPrevClicked()" [disabled]="!hasPrevItem()" [label]="'prev' | translate"
+                [icon]="'pi pi-angle-left'"></p-button>
+            </li>
+            <li>
+              <p-button (click)="onNextClicked()" [disabled]="!hasNextItem()" [label]="'next' | translate"
+                [icon]="'pi pi-angle-right'"></p-button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Content -->
+  <ng-template pTemplate="summary">
+
+    <!--
+      View mode
+    -->
+    <p-tabView *ngIf="!editMode" (onChange)="onTabChanged($event.index)" [(activeIndex)]="activeIndex">
+      <p-tabPanel header="{{'main' | translate}}" *ngIf="visableMain">
+        <ng-container *ngIf="!editMode">
+          <div style="clear: both;"></div>
+          <app-item-view [data]="data"></app-item-view>
+        </ng-container>
+      </p-tabPanel>
+
+      <!-- Relation-tabs -->
+      <ng-container *ngIf="!editMode">
+        <p-tabPanel *ngFor="let tab of tabs; let tabIndex = index" [header]="tab.label">
+          <app-item-view *ngIf="!tab.hasMany" [data]="tab.data"></app-item-view>
+          <app-items-table *ngIf="tab.hasMany" [tableData]="tab.data"
+            (rowEditClicked)="onRelationRowEditClicked(tab, $event)"
+            (deleteItems)="onDeleteRelationItems(tabIndex, $event)"
+            [confirmDeleteItemMessage]="'confirm.really-remove-relationship' | translate"
+            [confirmMultiDeleteItemsMessage]="'confirm.really-remove-marked-relationships' | translate">
+          </app-items-table>
+        </p-tabPanel>
+      </ng-container>
+
+      <!-- Assets (file manager) -->
+      <p-tabPanel [header]="'assets' | translate" *ngIf="visibleFileManager && recordItemFolderSlug">
+        <ng-container *ngIf="visibleFileManager">
+          <div>
+            <app-file-manager [itemSlug]="recordItemSlug" [folderSlug]="recordItemFolderSlug"></app-file-manager>
+          </div>
+        </ng-container>
+      </p-tabPanel>
+
+      <p-tabPanel *ngIf="versions" [header]="'versions' | translate">
+        <app-record-item-versions [versions]="versions"></app-record-item-versions>
+      </p-tabPanel>
+      <p-tabPanel *ngIf="notes" header="{{'notes' | translate}}">
+        <app-record-item-notes [notes]="notes"></app-record-item-notes>
+      </p-tabPanel>
+    </p-tabView>
+
+
+    <!--
+      Edit mode
+    -->
+    <p-tabView *ngIf="editMode && recordFormData && !recordFormData.Record.OpenFormInDialog">
+      <p-tabPanel header="{{'main' | translate}}" *ngIf="visableMain">
+        <ng-container *ngIf="editMode && recordFormData">
+          <app-form-builder #fb
+              [formData]="recordFormData.Record"
+              [fieldCollectionService]="fieldCollectionService"
+              [formMode]="FormModeEnum.Use"
+              [recordSlug]="recordSlug"
+              [recordItemSlug]="recordItemSlug"
+              (formBuilt)="onFormBuilt()"></app-form-builder>
+
+          <app-save-cancel-buttons
+            [disabled]="!(permissions.canEdit || permissions.canCreate)"
+            [showSaveAndExitButton]="!isQuickAddForm"
+            [showSaveAndNewButton]="!isQuickAddForm"
+            [showCopyButton]="true"
+            (save)="onSaveRecordItemClicked($event)"
+            (cancel)="onCancelClicked()"
+            [showDeleteButton]="!isNewItem && permissions.canDelete && !isQuickAddForm"
+            (delete)="onDeleteRecordItemClicked()">
+          </app-save-cancel-buttons>
+
+        </ng-container>
+      </p-tabPanel>
+
+      <p-tabPanel header="{{'assets' | translate}}" *ngIf="visibleFileManager && recordItemFolderSlug && !isQuickAddForm">
+        <ng-container *ngIf="visibleFileManager">
+          <div>
+            <app-file-manager [itemSlug]="recordItemData.Slug" [folderSlug]="recordItemFolderSlug"></app-file-manager>
+          </div>
+        </ng-container>
+      </p-tabPanel>
+
+      <p-tabPanel *ngIf="versions && !isQuickAddForm" header="{{'versions' | translate}}">
+        <app-record-item-versions [versions]="versions"></app-record-item-versions>
+      </p-tabPanel>
+
+      <p-tabPanel *ngIf="notes && !isQuickAddForm" header="{{'notes' | translate}}">
+        <app-record-item-notes [notes]="notes"></app-record-item-notes>
+      </p-tabPanel>
+    </p-tabView>
+
+
+    <p-dialog *ngIf="recordFormData && recordFormData.Record.OpenFormInDialog" [(visible)]="isDialogVisible"
+      [closable]="true" [style]="{'width': '98%'}" [modal]="true" (onHide)="onCancelClicked()">
+      <p-tabView *ngIf="editMode">
+        <p-tabPanel header="{{'main' | translate}}" *ngIf="visableMain">
+          <ng-container *ngIf="editMode && recordFormData">
+            <app-form-builder #fb
+                [formData]="recordFormData.Record"
+                [fieldCollectionService]="fieldCollectionService"
+                [formMode]="FormModeEnum.Use"
+                (formBuilt)="onFormBuilt()"></app-form-builder>
+
+            <app-save-cancel-buttons
+              [disabled]="!(permissions.canEdit || permissions.canCreate)"
+              [showCopyButton]="true"
+              (save)="onSaveRecordItemClicked($event)"
+              (cancel)="onCancelClicked()"></app-save-cancel-buttons>
+
+          </ng-container>
+        </p-tabPanel>
+        <p-tabPanel header="{{'assets' | translate}}" *ngIf="visibleFileManager">
+          <ng-container *ngIf="visibleFileManager">
+            <div>
+              <app-file-manager [itemSlug]="recordItemData.Slug" [folderSlug]="recordItemData.Folder.Slug">
+              </app-file-manager>
+              <!--  <fm-file-manager (itemClicked)="itemClicked($event)" [language]="appLanguage" [tree]="tree"></fm-file-manager>-->
+            </div>
+          </ng-container>
+        </p-tabPanel>
+      </p-tabView>
+    </p-dialog>
+
+  </ng-template>
+</p-table>
+
+<app-task-delete-check-modal (acceptEvent)="deleteTask()" (onHideEvent)="deleteModalHide()"
+  [visible]="openDeleteCheckModal"></app-task-delete-check-modal>
+<app-task-status-update-modal (acceptEvent)="editTask($event)" (onHideEvent)="editModalHide()"
+  [visible]="openEditModal"></app-task-status-update-modal>
+<app-view-file-dialog #viewFileDialog></app-view-file-dialog>

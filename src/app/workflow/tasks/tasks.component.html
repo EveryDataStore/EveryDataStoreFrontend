@@ -1,0 +1,98 @@
+<div style="clear: both;"></div>
+
+<p-table #dt [value]="tasks"
+         [paginator]=true
+         [rows]="itemsPerPage"
+         [totalRecords]="recordItemsCount"
+         [rowsPerPageOptions]="[itemsPerPage, 20, 50, 70, 100]"
+         [first]="first"
+         [lazy]="true"
+         (onLazyLoad)="loadItemsLazy($event)"
+         [responsive]="true"
+         selectionMode="multiple"
+         [showCurrentPageReport]="true"
+         [currentPageReportTemplate]="'page-report-template' | translate "
+         [(selection)]="rowsSelected"
+         dataKey="recordItemSlug"
+>
+
+  <!-- table caption -->
+  <ng-template pTemplate="caption">
+    <div class="table-header">
+      {{taskTitle}}
+
+      <div class="table-header-right">
+        <div *ngIf="showFilter">
+            <p-calendar (onSelect)="onCreatedFrom($event)" dateFormat="dd.mm.yy"
+                        placeholder="{{'created-from' | translate}}" [appendTo]="'body'"></p-calendar>
+        </div>
+        <div *ngIf="showFilter">
+            <p-calendar (onSelect)="onCreatedTo($event)" dateFormat="dd.mm.yy" 
+                        placeholder="{{'created-to' | translate}}" [appendTo]="'body'">
+                
+            </p-calendar>
+        </div>
+        <div class="p-inputgroup" [ngClass]="'global-search-input'" style="float: right; width: 100%; padding: 0">
+            <span class="p-inputgroup-addon">
+                <i class="pi  pi-calendar p-pi-filter" (click)="onShowFilter()"></i></span>
+            <input type="text" pInputText placeholder="{{'search-items' | translate}}" (input)="search($event.target.value)">
+        </div>
+
+        <div class="table-header-right-buttons"></div>
+      </div>
+
+    </div>
+  </ng-template>
+
+  <!-- table header -->
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 3rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th style="width: 8rem"></th>
+
+      <th *ngFor="let col of cols" [pSortableColumn]="col.title">
+        {{col.title}}
+        <p-sortIcon style="color: #6c757d;" [field]="col.title" ariaLabel="Activate to sort"
+                    ariaLabelDesc="Activate to sort in descending order"
+                    ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+
+  <!-- table body -->
+  <ng-template pTemplate="body" let-row let-rowIndex="rowIndex" let-columns="cols">
+    <tr class="task-{{row.status}}-row p-selectable-row">
+      <td>
+        <p-tableCheckbox [value]="row" (click)="$event.stopPropagation()"></p-tableCheckbox>
+      </td>
+      <td>
+        <button pButton *ngIf="permissions.canEdit && row.recordItemSlug" type="button" (click)="onEditItemClicked(row)"
+                class="p-button-success" icon="pi pi-pencil" [pTooltip]="'edit'" style="margin-right: .5em"></button>
+        <button pButton *ngIf="permissions.canDelete" type="button" (click)="onDeleteItemClicked(row)"
+                class="p-button-warning" icon="pi pi-trash" [pTooltip]="'delete'" style="margin-right: .5em"></button>
+      </td>
+
+      <td *ngFor="let col of cols" (click)="onEditItemClicked(row)">
+        <span class="test" *ngIf="col.fieldSlug === 'Note'" [pTooltip]="row[col.fieldSlug]" tooltipPosition="top">
+          {{row[col.fieldSlug] | slice: 0:15 }}
+          <span *ngIf="row[col.fieldSlug] && row[col.fieldSlug].length >= 15">...</span>
+        </span>
+        <span class="p-column-title">{{col.title}}</span>
+        <span *ngIf="col.fieldSlug !== 'Note'">{{row[col.fieldSlug]}}</span>
+      </td>
+    </tr>
+  </ng-template>
+  <!-- table summary -->
+  <ng-template pTemplate="summary">
+    <div style="display: flex;">
+      <div style="margin-right: 10px;">
+        <button pButton  *ngIf="permissions.canDelete" [disabled]="rowsSelected.length === 0" type="button" (click)="onMarkedItemsDeleteClicked()"
+                [label]="getMultiDeleteBtnCaption()" class="ui-button-warning" icon="pi pi-trash"
+                [pTooltip]="'delete'"></button>
+      </div>
+    </div>
+  </ng-template>
+</p-table>
+

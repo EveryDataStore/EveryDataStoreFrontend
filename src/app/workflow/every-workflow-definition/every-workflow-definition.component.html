@@ -1,0 +1,18 @@
+<p-accordion [multiple]="true">
+    <p-accordionTab *ngFor="let item of workflowsDefinition" [header]="item?.Title4AccordionTab" [selected]="item?.Slug === slug">
+    <ul>
+      <li [ngClass]="{'active': item?.Slug === slug && taskStatus === 'Seen'}" style="cursor: pointer" (click)="getTasks(item?.Slug, 'Seen,Unseen')">
+        {{'Open' | translate}} ({{ item?.OpenTasksCount }})
+      </li>
+       <li [ngClass]="{'active': item?.Slug === slug && taskStatus === 'InProcessing'}" style="cursor: pointer" (click)="getTasks(item?.Slug, 'InProcessing')">
+        {{'in-processing' | translate}} ({{ item?.InProcessingTasksCount }})
+      </li>
+      <li [ngClass]="{'active': item?.Slug === slug && taskStatus === 'Complete'}" style="cursor: pointer" (click)="getTasks(item?.Slug, 'Complete')">
+         {{'Complete' | translate}}  ({{ item?.CompleteTasksCount }})
+      </li>
+      <li style="cursor: pointer" (click)="getTasks(item?.Slug, 'Invalid')">
+       {{'broken' | translate}} ({{ item?.InvalidTasksCount }})
+      </li>
+    </ul>
+  </p-accordionTab>
+</p-accordion>

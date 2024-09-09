@@ -1,0 +1,107 @@
+<div style="min-height: 400px;">
+    <table class="table">
+         <tr *ngIf="field.slug">
+                <td class="td-label">Slug</td>
+                <td class="td-input">{{field.slug}}</td>
+            </tr>
+        <ng-container *ngFor="let editField of editFields">
+            <tr *ngIf="checkCondition(editField)" style="margin-bottom: 5px;">
+                <td class="td-label" [class.disabled]="checkDisabledConditions(editField)">
+                    {{editField.label | translate}}:
+                    <i *ngIf="editField.hint" class="pi pi-info-circle" style="vertical-align: middle;" [pTooltip]="editField.hint | translate"></i>
+                </td>
+                <td class="td-input">
+            <ng-container [ngSwitch]="editField.type">
+
+                <!-- Text -->
+                <ng-container *ngSwitchCase="editType.Text">
+                    <input  pInputText class="inputfield"
+                            [disabled]="checkDisabledConditions(editField)"
+                            [maxLength]="editField.maxLength || 524288"
+                            [placeholder]="editField.placeholder || ''" type="text"
+                            (ngModelChange)="onChange(editField)"
+                            [(ngModel)]="editField.value" />
+                </ng-container>
+
+                <!-- Number -->
+                <ng-container *ngSwitchCase="editType.Number">
+                    <input  pInputText type="number"
+                            [disabled]="checkDisabledConditions(editField)"
+                            pKeyFilter='pint'
+                            class="inputfield"
+                            (ngModelChange)="onChange(editField)"
+                            [placeholder]="editField.placeholder || ''"
+                            [(ngModel)]="editField.value" />
+                </ng-container>
+
+                <!-- Checkbox -->
+                <ng-container *ngSwitchCase="editType.Checkbox">
+                    <p-checkbox [disabled]="checkDisabledConditions(editField)"
+                                [(ngModel)]="editField.value"
+                                [binary]="true"
+                                (onChange)="onChange(editField)"></p-checkbox>
+                </ng-container>
+
+                <!-- Dropdown -->
+                <ng-container *ngSwitchCase="editType.Dropdown">
+                    <p-dropdown *ngIf="!editField.dropdownMultiple"
+                                [disabled]="checkDisabledConditions(editField)"
+                                (onChange)="onChange(editField)"
+                                [(ngModel)]="editField.value"
+                                [options]="editField.options"
+                                [appendTo]="'body'"></p-dropdown>
+
+                    <p-multiSelect *ngIf="editField.dropdownMultiple"
+                                   [disabled]="checkDisabledConditions(editField)"
+                                   (onChange)="onChange(editField)"
+                                   [(ngModel)]="editField.value"
+                                   [options]="editField.options"
+                                   [appendTo]="'body'"
+                                   [style]="{'width': '100%'}"></p-multiSelect>
+                </ng-container>
+
+                <!-- Radiobuttons -->
+                <ng-container *ngSwitchCase="editType.RadioButtons">
+                    <div *ngFor="let option of editField.options" class="radio-div">
+                        <p-radioButton  [name]="editField.name"
+                                        [disabled]="checkDisabledConditions(editField)"
+                                        [value]="option.value"
+                                        [label]="option.label | translate"
+                                        [(ngModel)]="editField.value"
+                                        (ngModelChange)="onChange(editField)"></p-radioButton>
+                    </div>
+                </ng-container>
+
+                <!-- Record select -->
+                <ng-container *ngSwitchCase="editType.RecordSelect">
+                    <app-record-select  [(ngModel)]="editField.value"
+                                        (ngModelChange)="onChange(editField)"
+                                        [formData]="formData"></app-record-select>
+                </ng-container>
+
+                <!-- Model select -->
+                <ng-container *ngSwitchCase="editType.ModelSelect">
+                    <app-model-select [(ngModel)]="editField.value"
+                                      (ngModelChange)="onChange(editField)" ></app-model-select>
+                </ng-container>
+
+                <!-- Display fields -->
+                <ng-container *ngSwitchCase="editType.DisplayFields">
+                    <app-display-fields [(ngModel)]="editField.value"
+                                        [editFields]="editFields"
+                                        (ngModelChange)="onChange(editField)"></app-display-fields>
+                </ng-container>
+
+                <!-- Field mapping-->
+                <ng-container *ngSwitchCase="editType.FieldMapping">
+                    <app-field-mapping  [(ngModel)]="editField.value"
+                                        [editFields]="editFields"
+                                        [formData]="formData"></app-field-mapping>
+                </ng-container>
+
+            </ng-container>
+            </td>
+            </tr>
+        </ng-container>
+    </table>
+</div>

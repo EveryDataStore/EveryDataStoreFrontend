@@ -1,0 +1,12 @@
+<div class="layout-topbar">
+    <div class="layout-right-panel-button" [ngClass]="langDir=='rtl'?'layout-right-panel-button-rtl':''">
+     <img src="assets/layout/images/logo-mobile.png" [ngClass]="langDir=='rtl'?'logo-mobile-rtl':''" class="logo-mobile ss"/>
+    </div>
+    <!--<div class="layout-right-panel-button" >
+        <a (click)="root.onChangeLang('en')" pTooltip="English" [class.active]="app.actualLang === 'en'" href="javascript:">en</a> / 
+        <a (click)="root.onChangeLang('de')" pTooltip="Deutsch" [class.active]="app.actualLang === 'de'" href="javascript:">de</a>
+    </div>-->
+    <a href="javascript:void(0);" class="layout-menu-button layout-topbar-icon" (click)="app.onMenuButtonClick($event)">
+        <i class="pi pi-bars"></i>
+    </a>
+</div>

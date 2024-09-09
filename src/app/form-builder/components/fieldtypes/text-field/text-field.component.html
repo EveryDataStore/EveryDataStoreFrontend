@@ -1,0 +1,48 @@
+<ng-container [ngSwitch]="formMetaField.textType">
+  <div class="p-inputgroup" [class.hidden]="isHidden">
+    <!-- Date or datetime textbox -->
+    <ng-container *ngSwitchCase="dateTextTypes.includes(formMetaField.textType) ? formMetaField.textType : ''">
+      <span class="p-inputgroup-addon"><i class="fa fa-calendar"></i></span>
+      <p-calendar [(ngModel)]="value" [appendTo]="'body'" [showTime]="formMetaField.textType == dateTimeTextType" [disabled]="isReadOnly"
+                  [dateFormat]="dateFormat" [showSeconds]="showSeconds" [hourFormat]="hourFormat"
+                  [required]="formMetaField.required"></p-calendar>        
+
+    </ng-container>
+
+    <!-- Time textbox -->
+    <ng-container *ngSwitchCase="timeTextType == formMetaField.textType ? formMetaField.textType : ''">
+      <span class="p-inputgroup-addon"><i class="fa fa-clock"></i></span>
+      <p-calendar [(ngModel)]="value" [appendTo]="'body'" [timeOnly]="true" [dataType]="'string'" [disabled]="isReadOnly"
+                  [hourFormat]="hourFormat" [showSeconds]="showSeconds"
+                  [required]="formMetaField.required"></p-calendar>
+
+    </ng-container>
+
+    <!-- All other textboxes -->
+    <ng-container *ngSwitchDefault>
+      <div *ngIf="formMetaField?.name === 'ConfirmPassword' || formMetaField?.name === 'Password'">
+        <div *ngIf="control.invalid">
+          <div class="input-invalid" *ngIf="control.errors.minlength">
+            You must enter at least {{minValue ? minValue : ''}} - {{maxValue ? maxValue : '2'}} characters
+          </div>
+        </div>
+      </div>
+
+      <input [type]="inputType" pInputText 
+             [pKeyFilter]="keyfilter" 
+             [placeholder]="formMetaField.placeholder || ''" [disabled]="isReadOnly"
+             [(ngModel)]="value" 
+             #control="ngModel"
+             (change)="onChange()"
+             [maxlength]="maxValue ? maxValue : formMetaField.maxLength"
+             [minlength]="minValue ? minValue : formMetaField?.name === 'ConfirmPassword' || formMetaField?.name === 'Password' ? 2 : 0"
+             class="textfield input" 
+             [class.error]="control.invalid && !this.inBuildMode" 
+             ngModel [email]="this.formMetaField.textType === 'email'"                                                            
+             [required]="formMetaField.required" 
+             style="border: 1px solid #a9a9ae;" />
+      <span *ngIf="unit !== null" class="p-inputgroup-addon">{{unit}}</span>
+    </ng-container> 
+  </div>
+</ng-container>
+

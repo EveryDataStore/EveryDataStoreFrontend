@@ -1,0 +1,58 @@
+.form-column-build {
+  border: 1px solid silver;
+  background: #fbfbfb;
+}
+
+.form-column {
+  padding: 6px;
+  min-height: 100px;
+}
+
+.field {
+  min-height: 40px;
+  margin-bottom: 15px;
+  padding: 4px;
+}
+
+.hidden {
+  display: none;
+}
+
+.field-build {
+  margin-bottom: 35px;
+  border: 1px dashed silver;
+}
+
+.drag-started {
+  background-color: #fde19a;
+  display: block;
+}
+
+.drag-ended {
+  display: none;
+}
+
+.column-actionbar {
+  background: #eaeaea;
+  margin-bottom: 9px;
+  padding-left: 0px;
+  padding-right: 6px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  text-align: right;
+  border-bottom: 1px solid silver;
+  margin-left: -6px;
+  margin-right: -6px;
+  margin-top: -6px;
+  
+}
+
+.field-actionbar {
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.field-action-button {
+  margin-left: 4px;
+}

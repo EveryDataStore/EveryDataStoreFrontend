@@ -1,0 +1,4 @@
+<p-dropdown *ngIf="!multiSelect" [options]="options" (onChange)="onLanguageChange($event)" [(ngModel)]="optionSelected" [id]="fieldId" [style]="{'width': '100%'}"
+[placeholder]="placeholder"></p-dropdown>
+<p-multiSelect *ngIf="multiSelect" [options]="options" [(ngModel)]="optionSelected" [id]="fieldId" [style]="{'width': '100%'}"
+[defaultLabel]="placeholder"></p-multiSelect>

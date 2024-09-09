@@ -1,0 +1,49 @@
+<ng-container *ngIf="showPlugin">
+    <p-panel [styleClass]="'form-section custom-section-header'">
+        <p-header>
+            <span style="font-weight: bold;">{{'Positions' | translate}}</span>
+        </p-header>
+
+        <ng-container *ngIf="formInformations.length > 0">
+            <table>
+                <tr>
+                    <th style="width: 40px;"></th>
+                    <th style="width: 90%;"></th>
+                    <th style="text-align: right;">Summe</th>
+                </tr>
+
+                <ng-container *ngFor="let formInformation of formInformations; let i = index;">
+                    <tr>
+                        <td style="vertical-align: top; padding-top: 36px;">
+                            <p-button [icon]="'fa fa-trash'" class="removeBtn" (click)="removePosition(formInformation)"></p-button>
+                        </td>
+                        <td>
+                            <div>
+                                <app-form-builder *ngIf="formInformation.recordFormData"
+                                    [fieldCollectionService]="fieldCollectionService"
+                                    [formData]="formInformation.recordFormData.Record"
+                                    [recordItemSlug]="formInformation.recordItemSlug"
+                                    [parentRecordItemSlug]="parentRecordItemSlug"
+                                    [isSubForm]="true" [subFormOrder]="i"
+                                    [autoOpenFieldSlug]="formInformation.autoOpen ? formInformation.positionItemDef.itemFieldSlug : ''"
+                                    [formMode]="FormModeEnum.Use"></app-form-builder>
+                            </div>
+                        </td>
+                        <td style="text-align: right; vertical-align: top; padding-top: 48px;">
+                            <div class="positionSum">
+                                {{formInformation.sum}}
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+            </table>
+        </ng-container>
+
+        <div id="crm-plugin-buttons">
+            <p-button *ngIf="showAddProductButton" icon="pi pi-plus-circle" [label]="'add-product' | translate" (onClick)="onAddProductClicked()" [ngStyle]="{'margin-right': '10px'}"></p-button>
+            <p-button *ngIf="showAddServiceButton" icon="pi pi-plus-circle" [label]="'add-service' | translate" (onClick)="onAddServiceClicked()" [ngStyle]="{'margin-right': '10px'}"></p-button>
+        </div>
+    </p-panel>
+
+</ng-container>
+

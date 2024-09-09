@@ -1,0 +1,52 @@
+<ng-container *ngIf="!useDialog">
+  <p-dropdown *ngIf="!isHasMany"
+              [options]="items"
+              [(ngModel)]="itemIdSelected"
+              (onChange)="onItemChanged()"
+              [appendTo]="'body'"
+              [ngStyle]="{'flex-grow': 1}"
+              [filter]="true"
+              [placeholder]="'choose' | translate"></p-dropdown>
+
+  <p-multiSelect *ngIf="isHasMany"
+                 [options]="items"
+                 [(ngModel)]="itemIdsSelected"
+                 [appendTo]="'body'"
+                 [ngStyle]="{'flex-grow': 1}"
+                 [filter]="true"
+                 [defaultLabel]="'choose' | translate"
+  ></p-multiSelect>
+</ng-container>
+
+<ng-container *ngIf="useDialog">
+  <div class="items-selected-text">{{itemsSelectedText}}</div>
+  <p-button icon="pi pi-search-plus" (onClick)="onShowSelectDialogClicked()" class="show-dialog-btn"></p-button>
+
+  <p-dialog [header]="'please-choose' | translate" [(visible)]="showDialog" [styleClass]="'item-select-dialog'"
+            [modal]="true">
+    <div style="min-height: 500px;">
+      <app-items-table #itemsTable
+                       [hasDeleteButtons]="false"
+                       [hasEditButtons]="false"
+                       [multiple]="isHasMany"
+                       [hasHeader]="true"
+                       [hasQuickAddButton]="true"
+                       [loadLazy]="true"
+      ></app-items-table>
+    </div>
+    <p-footer>
+      <button pButton type="button"
+              (click)="onItemsSelectedInDialog()"
+              icon="fa fa-check"
+              label="Ok"
+              class="p-button-success"></button>
+
+      <button pButton type="button"
+              icon="fa fa-times"
+              [label]="'close' | translate"
+              (click)="showDialog=false"
+              [ngStyle]="{'float': 'right'}"
+              class="p-button-secondary"></button>
+    </p-footer>
+  </p-dialog>
+</ng-container>

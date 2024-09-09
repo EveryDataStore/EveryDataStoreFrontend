@@ -1,0 +1,29 @@
+/** Progress spinner (busy indicator) **/
+
+.main-progress-spinner {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 9999;
+  }
+  
+  .main-progress-spinner .spinner {
+    left: calc(50% - 1em);
+    top: 42%;
+    position: fixed;
+    font-size: 3em;
+  }
+  
+  .active {
+    font-weight: bold;
+  }
+  .dir-rtl{
+    direction: rtl;
+  }
+  .dir-ltr{
+    direction: ltr;
+  }

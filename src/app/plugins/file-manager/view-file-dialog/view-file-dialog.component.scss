@@ -1,0 +1,125 @@
+.closeBtn {
+    position: absolute;
+    right: 5px;
+    background: transparent !important;
+    color: #000 !important;
+    border: 0 !important;
+    font-size: 26px !important;
+    top: 7px;
+    opacity: 0.2;
+    width: auto !important;
+    &:focus {
+      box-shadow: none !important;
+      outline: 0 !important;
+    }
+    .ui-button-text {
+      padding: 0 !important;
+    }
+  }
+
+  @media (min-width: 992px) {
+    ::ng-deep .dialog-container {
+      -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+    }
+    ::ng-deep .dialog-left {
+      -ms-flex: 1;
+      flex: 1;
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+    ::ng-deep .dialog-right {
+      -ms-flex: 0 0 100%;
+      flex: 0 0 100%;
+      width: 100%;
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+
+    :host::ng-deep .ui-table .ui-table-tbody > tr > td {
+      padding: 5px 3px;
+      font-size: 10px !important;
+    }
+
+    .fullWidth {
+      width: 100%;
+    }
+  }
+  .float-margin {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  @media (min-width: 992px) {
+    ::ng-deep .dialog-container {
+      -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+    }
+    ::ng-deep .dialog-left {
+      -ms-flex: 1;
+      flex: 1;
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+    ::ng-deep .dialog-right {
+      -ms-flex: 0 0 100%;
+      flex: 0 0 100%;
+      width: 100%;
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+
+    :host::ng-deep .ui-table .ui-table-tbody > tr > td {
+      padding: 5px 3px;
+      font-size: 10px !important;
+    }
+
+    .fullWidth {
+      width: 100%;
+    }
+  }
+
+  .loading-text {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .top-navigation {
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .top-navigation ul.controls {
+    list-style: none;
+    display: -ms-flexbox;
+    display: flex;
+    margin: 0;
+    padding: 6px 7px 6px 20px;
+  }
+  .top-navigation ul.controls li {
+    margin-right: 10px;
+  }
+  .top-navigation ul.controls li a {
+    font-size: 20px;
+    color: #337ab7;
+  }
+  .top-navigation ul.controls li a i {
+    color: #337ab7;
+  }
+  .right-0-5{
+    right:0.5rem !important;
+    left: auto;
+  }
+
+.view-file-dialog {
+  .show-data-panel-button {
+    float: right;
+    position: absolute;
+    top: 3px;
+    right: 5px;
+  }
+}

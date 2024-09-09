@@ -1,0 +1,40 @@
+<p-dialog header="{{ 'edit-task' | translate }}" (onHide)="onHide()" [draggable]="false" [(visible)]="visible"
+          [style]="{width: '600px'}"
+          [contentStyle]="{height: '600px'}"
+          [modal]="true" [baseZIndex]="10000">
+    <div class="edit-task-input-row">
+        <label for="status">{{ 'status' | translate }}</label>
+        <select [(ngModel)]="status" id="status" class="manual-dropdown">
+            <option></option>
+            <option [ngValue]="'InProcessing'">{{ 'in-processing' | translate }}</option>
+            <option [ngValue]="'Complete'">{{ 'complete' | translate }}</option>
+            <option [ngValue]="'Duplicate'">{{ 'duplicate' | translate}}</option>
+            <option [ngValue]="'Invalid'">{{ 'invalid' | translate }}</option>
+            <option [ngValue]="'Unseen'">{{ 'unseen' | translate }}</option>
+        </select>
+    </div>
+    <div class="edit-task-input-row">
+        <label for="note">{{ 'members' | translate }}</label>
+        <p-multiSelect [options]="membersList" optionLabel="fullName" defaultLabel="Select a Members" [(ngModel)]="members"
+                       [style]="{'width': '100%'}">
+        </p-multiSelect>
+    </div>
+    <div class="edit-task-input-row">
+        <label for="note">{{ 'groups' | translate }}</label>
+        <p-multiSelect optionLabel="Title" [options]="groupList" defaultLabel="Select a Group" [(ngModel)]="groups"
+                       [style]="{'width': '100%'}"></p-multiSelect>
+    </div>
+    <div class="edit-task-input-row">
+            <label for="note">{{ 'note' | translate }}</label>
+            <textarea [(ngModel)]="note" placeholder="{{ 'enter-note' | translate }}" [rows]="5" [cols]="30" id="note"
+                      pInputTextarea></textarea>
+    </div>
+    <p-footer>
+        <div>
+            <button pButton type="button" label="{{ 'save' | translate }}" (click)="accept()" class="p-button-success"
+                    style="margin-right: 5px;"></button>
+            <button pButton icon="pi pi-times" (click)="dismiss()" type="button" label="{{ 'cancel' | translate }}"
+                    class="p-button-secondary"></button>
+        </div>
+    </p-footer>
+</p-dialog>

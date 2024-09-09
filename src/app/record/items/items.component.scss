@@ -1,0 +1,78 @@
+.list-record-item-media{
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.list-record-item-media li{
+    list-style: none;
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.list-record-item-media li .fa{
+    font-size: 30px;
+}
+.new-item-btn {
+    float: right;
+    margin-bottom: 5px;  
+    margin-left: 5px; 
+    display: none;
+}
+
+.new-item-btn-cal{
+    display: inline-block;
+}
+
+.table-header {
+    width: 100%;
+}
+
+.header-buttons-right{
+    text-align: right;
+}
+
+.header-buttons-left{
+    padding-top: 12px;
+}
+.header-buttons-left a, .header-buttons-left a .pi, .header-buttons-left{
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.header-buttons-left a:hover{
+    color:#333
+}
+
+:host::ng-deep .p-datatable .p-datatable-footer, :host::ng-deep .p-datatable .p-datatable-header{
+    padding: 0;
+}
+
+.grid{
+    padding-top:10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+}
+
+.a-content{
+    float: right;
+}
+
+.header-buttons-left a::after{
+    content: " / ";
+}
+
+@media screen and (max-width: 600px) {
+    .new-item-btn{
+        display:inline-block;
+    } 
+    .header-buttons-right{
+    text-align: left;
+    padding: 0;
+}
+}
+.p-inputgroup-addon-custom{
+    border-right: 1px solid #ced4da !important;
+    border-left: 0px solid #ced4da !important;
+}

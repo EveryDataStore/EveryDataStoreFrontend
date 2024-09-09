@@ -1,0 +1,7 @@
+<p-messages *ngIf="!isActiveApp" severity="warn">
+    <ng-template pTemplate>
+        <div class="p-ml-2"><h5><strong>{{appName}}</strong> {{'app_not_active_or_license_is_not_available' | translate}}  </h5>
+            <a href="./admin/App"><button class="p-button-primery" pButton>{{'activate_app'  | translate }}</button></a>
+        </div>
+    </ng-template>
+</p-messages>
