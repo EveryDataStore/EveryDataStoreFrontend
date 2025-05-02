@@ -186,7 +186,18 @@
    "changedby":"تغيير من قبل",
    "filename": "اسم الملف",
    "link": "حلقة الوصل",
-    "no_records_found": "لا توجد سجلات"
+    "no_records_found": "لا توجد سجلات",
+    "Today-Time-Report": "تقرير وقت اليوم",
+    "checkIn": "تسجيل الوقت",
+    "checkOut": "انهاء الوقت",
+    "checkedIn": "اخر تسجيل للوقت",
+    "checkedOut": "اخرانهاء للوقت",
+    "Tracked": "المسجل",
+    "Should": "المفروض",
+    "Overtime": "اضافية",
+    "Undertime": "ناقص",
+    "sync-ocr": "Sync-OCR (سوف يتم التعامل مع الملف لحقا)",
+    "upload-btn-success": "لقد تم رفع الملف"
 }
 
 

@@ -1,6 +1,6 @@
 
     <ng-container *ngIf="!isBinary">
-        <ng-container *ngIf="!inBuildMode"><app-field-label [field]="formMetaField"></app-field-label></ng-container>
+        <ng-container *ngIf="!inBuildMode"><app-field-label [field]="formMetaField" [checkForVisibility]="false"></app-field-label></ng-container>
         <div *ngFor="let option of getOptions() | keyvalue" style="margin-bottom: 4px;">
         <p-checkbox [label]="option.value" [value]="option.key" [(ngModel)]="optionSelected"></p-checkbox>
         </div>
@@ -8,7 +8,7 @@
 
     <ng-container *ngIf="isBinary">
         <div class="p-field-checkbox">
-        <p-checkbox [label]="" [value]="" [(ngModel)]="optionSelected" [binary]="true"></p-checkbox>    
+        <p-checkbox [label]="" [value]="" [(ngModel)]="optionSelected" [binary]="true"></p-checkbox>
         <label>{{formMetaField.label | translate}}</label>
         </div>
     </ng-container>

@@ -61,7 +61,7 @@ body a:hover {
 /**
  * Layout
  **/
-
+important
 /** change padding for content container **/
 .layout-wrapper .layout-main .layout-content {
   padding: 8px;
@@ -141,7 +141,7 @@ body a:hover {
 
 /** login page body **/
 .login-body {
-  background-position: center;
+  background-position: -160px;
 }
 
 
@@ -363,3 +363,12 @@ body .p-table .p-table-caption {
 .hidden {
   display: none;
 }
+
+
+@media screen and (min-width: 897px) {
+    .layout-wrapper.layout-horizontal .layout-menu-container .layout-menu > li > a .layout-submenu-toggler {
+        display: none;
+    }
+}
+
+

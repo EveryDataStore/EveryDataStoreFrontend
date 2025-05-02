@@ -74,9 +74,10 @@ export class ItemComponent implements OnInit, AfterContentChecked, OnDestroy {
   listpage = null;
   data: any[];
   navInfo: [] = [];
+  user: any;
   token: string;
   permissions: Permissions = new Permissions();
-
+  isCalendarRecordSet = false;
   dialogVisible = true;
   dashboardPath: string;
 
@@ -129,8 +130,10 @@ export class ItemComponent implements OnInit, AfterContentChecked, OnDestroy {
   async ngOnInit() {
     this.langDir = this.languageService.getLangDir();
     this.permissions = await this.permissionsService.getPermissionsForModel('RecordItem');
+    this.user = await this.apiService.getUserInfo();
 
     if ((this.dialogConfig.data?.itemSlug) && (this.dialogConfig.data?.recordSlug)) {
+        
       this.editMode = true;
       this.isQuickAddForm = true;
       this.recordItemSlug = this.dialogConfig.data.itemSlug;
@@ -178,7 +181,6 @@ export class ItemComponent implements OnInit, AfterContentChecked, OnDestroy {
     this.recordItemData = await this.apiService.getRecordItem(recordItemSlug, recordItemVersion);
     this.recordSlug = this.recordItemData.Record.Slug;
     this.versions = this.recordItemData.versionHistory;
-    console.log(this.versions);
     this.pdfTemplateNames = this.recordItemData.PDFTemplateNames;
     this.notes = this.recordItemData.Notes;
     this.recordItemFolderSlug = this.recordItemData.Folder.Slug;
@@ -221,6 +223,9 @@ export class ItemComponent implements OnInit, AfterContentChecked, OnDestroy {
     if (this.task && this.recordItemData.WorkflowTasks.length > 0) {
       this.setTaskAsSeen(this.recordItemData.WorkflowTasks, this.task, this.apiService);
     }
+    
+    this.isCalendarRecordSet = this.recordSlug === this.user.Settings.CalendarRecordSlug ? true : false;
+
   }
 
   onFormBuilt() {
@@ -233,6 +238,7 @@ export class ItemComponent implements OnInit, AfterContentChecked, OnDestroy {
       recordItem.RecordSlug = this.recordSlug;
       this.busyService.show();
       await this.apiService.postRecordItem(this.recordItemSlug, recordItem);
+
       this.busyService.hide();
 
       if (saveType !== SaveType.SaveAndCopy) {
@@ -248,7 +254,13 @@ export class ItemComponent implements OnInit, AfterContentChecked, OnDestroy {
 
       this.canCancel = true;
       this.isNewItem = false;
-
+      
+      if(this.isCalendarRecordSet){
+            this.apiService.cacheCalendar({
+                recordSlug: this.recordSlug
+            });
+      }
+      
       switch (saveType) {
         case SaveType.SaveAndExit:
           await this.routingService.toRecordItemsList(this.recordSlug, this.getListpage());
@@ -304,6 +316,13 @@ export class ItemComponent implements OnInit, AfterContentChecked, OnDestroy {
         this.busyService.show();
         await this.apiService.deleteRecordItem(this.recordItemSlug);
         await this.routingService.toRecordItemsList(this.recordSlug, this.getListpage());
+        if(this.isCalendarRecordSet){
+        alert(11111);
+            this.apiService.cacheCalendar({
+                recordSlug: this.recordSlug
+            });
+        }
+        alert("DONE");
         this.busyService.hide();
         this.messageService.showSuccess(this.translateService.instant('item-deleted'));
       }
@@ -318,11 +337,12 @@ export class ItemComponent implements OnInit, AfterContentChecked, OnDestroy {
       const itemData: ItemData = recordItemData.ItemData.find(id => id.FormFieldSlug === field.slug);
       const value = (itemData) ? itemData.Value : field.value;
       const valueFormatted = field.formatValueForViewing(value);
-
+      const fieldSettingType = this.getFieldSettingType(field.Setting);
       data.push({
         label: field.label,
         value: valueFormatted,
         type: field.Type,
+        settingType: fieldSettingType,
         rawValue: field.value,
         slug: field.Slug,
         showInViewMode
@@ -330,7 +350,12 @@ export class ItemComponent implements OnInit, AfterContentChecked, OnDestroy {
     });
     return data;
   }
-
+  
+  private getFieldSettingType(Setting){
+    for(var i = 0; i < Setting.length; i++){
+        if(Setting[i].title == 'type') return Setting[i].value;
+    }
+ }
   private createDataForModelItemTableView(fields: FormMetaField[], columnNamesToShow: string[]): any[] {
     const data = [];
 

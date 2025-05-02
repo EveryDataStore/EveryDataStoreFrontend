@@ -1,0 +1,71 @@
+<p-card>
+    <ng-template pTemplate="header">
+        <div class="p-card-title ng-star-inserted center">
+            {{ widget().Title }}
+        </div>
+    </ng-template>
+    <div class="temp">
+        <div class="col-12">
+            <div class="container-clock">
+                <h3>{{ time | date: 'HH:mm:ss' }}</h3>
+            </div>
+
+            <div class="container-check-in-out-button">
+                <button pButton *ngIf="showCheckInButton" type="button" (click)="onCheckInClicked()"
+                        label="{{'checkIn' | translate}}" class="p-button-success" icon="fa fa-arrow-right"></button>
+                <button pButton *ngIf="showCheckOutButton" type="button" (click)="onCheckOutClicked()"
+                        label="{{'checkOut' | translate}}" class="p-button-warning" icon="fa fa-arrow-left"></button>
+            </div>
+        </div>
+        <div class="container-time-tracker">
+        <div class="col-12" *ngIf="timeReport['shouldHours'] || timeReport['trackedHours'] || timeReport['overtime'] || timeReport['overtime']" >
+            <h5>{{'Today-Time-Report' | translate}}</h5>
+            <span *ngIf="timeReport['currentAction'] =='CheckIn'" style="display: block; margin-bottom: 10px">{{'checkedIn' | translate}} {{ timeReport['currentActionTime'] | date: defaultDateTimeFormat }}</span>
+            <span *ngIf="timeReport['currentAction'] =='CheckOut'" style="display: block; margin-bottom: 10px">{{'checkedOut' | translate}} {{ timeReport['currentActionTime'] | date: defaultDateTimeFormat }}</span>
+            <table>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td style="padding-bottom: 10px">{{'Should' | translate}}</td>
+                                <td style="padding-bottom: 10px">
+                                    <span *ngIf="timeReport['shouldHours']">{{timeReport['shouldHours']}}</span>
+                                    <span *ngIf="!timeReport['shouldHours']">0</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{'Tracked' | translate}}</td>
+                                <td>
+                                    <span *ngIf="timeReport['trackedHours']">{{timeReport['trackedHours']}}</span>
+                                    <span *ngIf="!timeReport['trackedHours']">0</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td style="padding-bottom: 15px">{{'Overtime' | translate}}</td>
+                                <td style="padding-bottom: 15px">
+                                    <span *ngIf="timeReport['overtime']">{{timeReport['overtime']}}</span>
+                                    <span *ngIf="!timeReport['overtime']">0</span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>{{'Undertime' | translate}}</td>
+                                <td>
+                                    <span *ngIf="timeReport['undertime']">{{timeReport['undertime']}}</span>
+                                    <span *ngIf="!timeReport['undertime']">0</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        </div>
+    </div>
+</p-card>
+
+

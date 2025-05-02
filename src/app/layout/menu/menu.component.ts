@@ -142,6 +142,21 @@ export class AppMenuComponent implements OnInit {
     if (databaseMenuItem !== undefined) {
       databaseMenuItem.routerLink = '/records';
     }
+
+    for( var i = 0; i < adminMenuItems.length; i++){
+        if(adminMenuItems[i].routerLink[0].indexOf('/record/items/') > -1 ){
+                    adminMenuItems[i].routerLink[0] = adminMenuItems[i].routerLink[0].replace(/\/admin/g, '')
+        }
+
+        if(adminMenuItems[i].items){
+            for(var j=0; j <  adminMenuItems[i].items.length; j++){
+                if(adminMenuItems[i].items[j].routerLink[0].indexOf('/record/items/') > -1 ){
+                    adminMenuItems[i].items[j].routerLink[0] = adminMenuItems[i].items[j].routerLink[0].replace(/\/admin/g, '')
+                 }
+            }
+        }
+    }
+
     return adminMenuItems;
   }
 

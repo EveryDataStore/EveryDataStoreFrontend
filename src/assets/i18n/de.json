@@ -85,6 +85,7 @@
     "created": "Erstelldatum",
     "createdBy": "Erstellt von",
     "show": "Zeigen",
+    "clear": "Löschen",
     "rollback": "zurückrollen",
     "rollbacksuccess":"rollback success",
     "document": "Dokument",
@@ -145,7 +146,7 @@
     "activate_app":" App aktivieren?",
     "app-installed": "App wurde installiert",
     "app-deinstalled": "App wurde deinstalliert",
-    "saving-not-allowed-in-demo-mode": "Du bist im Demo-Modus, Daten können nicht gespeichert oder gelöscht werden!",
+    "saving-not-allowed-in-demo-mode": "Du bist im DEMO-MODUS, Daten können nicht gespeichert oder gelöscht werden!",
     "humidity": "Luftfeuchtigkeit",
     "add-product": "Produkt hinzufügen",
     "add-service": "Service hinzufügen",
@@ -172,7 +173,20 @@
     "of": "von",
     "dashboard": "Dashboard",
     "administration": "Administration",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "all-entries": "Alle Einträge",
+    "Today-Time-Report": "Zeiterfassung",
+    "checkIn": "Einchecken",
+    "checkOut": "Auschecken",
+    "checkedIn": "Eingecheckt am",
+    "checkedOut": "Ausgecheckt am",
+    "Tracked": "Erfasst",
+    "Should": "Soll",
+    "Overtime": "Überstunden",
+    "Undertime": "Minusstunden",
+    "sync-ocr": "Sync-OCR (data extraction wird im hintergrund später laufen)",
+    "upload-btn-success": "File wurde erfolgreich hochgeladen."
+
 }
 
 

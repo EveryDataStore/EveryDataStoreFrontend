@@ -5,7 +5,7 @@
       <span class="p-inputgroup-addon"><i class="fa fa-calendar"></i></span>
       <p-calendar [(ngModel)]="value" [appendTo]="'body'" [showTime]="formMetaField.textType == dateTimeTextType" [disabled]="isReadOnly"
                   [dateFormat]="dateFormat" [showSeconds]="showSeconds" [hourFormat]="hourFormat"
-                  [required]="formMetaField.required"></p-calendar>        
+                  [required]="formMetaField.required"></p-calendar>
 
     </ng-container>
 
@@ -28,21 +28,20 @@
         </div>
       </div>
 
-      <input [type]="inputType" pInputText 
-             [pKeyFilter]="keyfilter" 
+      <input [type]="inputType" pInputText
+             [pKeyFilter]="keyfilter"
              [placeholder]="formMetaField.placeholder || ''" [disabled]="isReadOnly"
-             [(ngModel)]="value" 
+             [(ngModel)]="value"
              #control="ngModel"
              (change)="onChange()"
              [maxlength]="maxValue ? maxValue : formMetaField.maxLength"
              [minlength]="minValue ? minValue : formMetaField?.name === 'ConfirmPassword' || formMetaField?.name === 'Password' ? 2 : 0"
-             class="textfield input" 
-             [class.error]="control.invalid && !this.inBuildMode" 
-             ngModel [email]="this.formMetaField.textType === 'email'"                                                            
-             [required]="formMetaField.required" 
-             style="border: 1px solid #a9a9ae;" />
+             class="textfield input"
+             [class.error]="control.invalid && !this.inBuildMode && showErrors()"
+             ngModel [email]="this.formMetaField.textType === 'email'"
+             [required]="formMetaField.required"/>
       <span *ngIf="unit !== null" class="p-inputgroup-addon">{{unit}}</span>
-    </ng-container> 
+    </ng-container>
   </div>
 </ng-container>
 

@@ -2920,11 +2920,10 @@ a {
   padding: 0;
   overflow: hidden;
   margin: 0 auto;
-  margin-left: -600px;
-  position: relative;
   height: 100vh;
   background: url("../../layout/images/pages/login-bg.jpg") no-repeat;
-  background-size: 50%;
+  background-size: 80%;
+
 }
 .login-body .login-panel {
   padding: 0 70px 20px 70px;

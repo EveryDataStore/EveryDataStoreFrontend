@@ -1,52 +1,63 @@
-import { BusyService } from './../shared/services/busy.service';
-import { ApiService } from './../shared/services/api.service';
-import { RoutingService } from './../shared/services/routing.service';
-import { Component, OnInit } from '@angular/core';
-import { ChangeDetectionStrategy, NgZone } from '@angular/core';
-import { LanguageService } from 'src/app/shared/services/language.service';
+import {Permissions, PermissionsService} from '../shared/services/permissions.service';
+import {BusyService} from '../shared/services/busy.service';
+import {ApiService} from '../shared/services/api.service';
+import { Component, inject, Injector, OnInit } from '@angular/core';
+import {WidgetLoader} from './widget-loader';
+import {Widget} from '../shared/models/entities/widget';
+import {isNil} from 'ngx-cookie';
+import {BaseWidgetComponent} from './widgets/base-widget/base-widget.component';
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss']
+    styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
+    public widgetList: any;
+    public user: any;
+    public permissions: Permissions = new Permissions();
+    public time = new Date();
 
-    widgetList: any;
+    public widgetLoader = WidgetLoader;
+    #injector = inject(Injector);
 
-    constructor(private routingService: RoutingService,
-                private apiService: ApiService,
-                private busyService: BusyService,
-                private languageService: LanguageService,
-                private ngZone: NgZone) { }
-
-    onModelGridSelect(event, modelName) {
-      this.routingService.toAdminModelItemEdit(modelName, event.data.Slug);
-    }
+    constructor(
+        private apiService: ApiService,
+        private busyService: BusyService,
+        private permissionsService: PermissionsService
+    ) {}
 
     async ngOnInit() {
-      this.busyService.show();
-      this.widgetList = await this.apiService.getEveryWidget();
-      console.log(this.widgetList);
-      this.busyService.hide();
-     
+        this.busyService.show();
+        this.user = await this.apiService.getUserInfo();
+        this.widgetList = await this.apiService.getEveryWidget();
+        this.permissions = await this.permissionsService.getPermissionsForModel('RecordItem');
+        this.busyService.hide();
     }
 
-    async onRecordGridRow(slug, taskSlug = null, definitionSlug = null){
-        if(taskSlug!= null && definitionSlug != null){
-            return this.routingService.toRecordItemEdit(slug,  {'task': taskSlug, 'definition': definitionSlug, 'type': 'workflow' });
+    public canShow(widget: Widget): boolean {
+        const component = this.widgetLoader.getWidget(widget.Type);
+        if (component) {
+            return (component as typeof BaseWidgetComponent).canShow(widget, this.user, this.permissions);
+        }
+        return false;
+    }
+
+    public getWidgetInput(widgetData: any) {
+        const inputData = {
+            permissions: this.permissions,
+            user: this.user,
+            widget: widgetData,
+        };
+
+        if (widgetData) {
+            if (widgetData.Configurations[0]?.Value) {
+                try {
+                    inputData['widgetConfig'] = JSON.parse(widgetData.Configurations[0].Value);
+                } catch (e) {}
+            }
         }
 
-        this.routingService.toRecordItemView(slug, null, 0);
+        return inputData;
     }
-
-     async onNewRecordItemClicked(recordSlug) {
-    const itemSlug = await this.apiService.createRecordItem(recordSlug);
-    await this.routingService.toRecordItemEdit(itemSlug);
-  }
-    
-    async onSearchRecordClicked(recordSlug) {
-    await this.routingService.toRecordItemsList(recordSlug, 1, '');
-  }
-    
 }

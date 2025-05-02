@@ -1,0 +1,385 @@
+body a:hover {
+    cursor: pointer;
+}
+
+/**
+  * Dnd-drag n drop adaptions
+  **/
+
+.dnd-drag-start {
+    opacity: 0.7;
+    border: 2px dashed gray !important;
+}
+
+.dnd-drag-enter {
+    opacity: 0.7;
+    border: 2px dashed gray !important;
+}
+
+.dnd-drag-over {
+    border: 2px dashed gray !important;
+}
+
+.dnd-sortable-drag {
+    opacity: 0.7;
+    border: 2px dashed gray !important;
+}
+
+/**
+ * Field styling
+ **/
+
+.textfield,
+.p-multiselect,
+.p-inputtext {
+    width: 100% !important;
+}
+
+.textfield {
+    border: 1px solid #a9a9ae;
+}
+
+.p-dropdown {
+    width: 100% !important;
+}
+
+.p-paginator .p-dropdown {
+    width: auto !important;
+}
+
+.textfield[readonly] {
+    background-color: #eee;
+    opacity: 1;
+}
+
+.field-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/**
+ * Tab-View
+ **/
+.p-tabview {
+    padding: 0px;
+}
+
+/**
+ * Layout
+ **/
+
+/** change padding for content container **/
+.layout-wrapper .layout-main .layout-content {
+    padding: 8px;
+    margin-top: 6px;
+}
+
+.layout-wrapper .layout-topbar {
+    height: 50px !important;
+}
+
+.layout-menu-button {
+    margin-top: -8px;
+}
+
+/** desktop mode **/
+@media screen and (min-width: 897px) {
+    .layout-wrapper.layout-horizontal .layout-topbar .layout-topbar-logo {
+        margin: 5px 0 0 0em;
+    }
+
+    /** move main menu to the left **/
+    .layout-wrapper.layout-horizontal .layout-menu-container {
+        padding-left: 0.2em;
+    }
+
+    /** hide topbar **/
+    .layout-topbar {
+        display: none !important;
+    }
+
+    .textfield {
+        max-width: 100% !important;
+    }
+
+    .form-builder .p-dropdown,
+    .form-builder .p-multiselect {
+        max-width: 100% !important;
+    }
+
+    .layout-wrapper.layout-horizontal .layout-menu-container .layout-menu > li > a {
+        height: 2.5em;
+        padding: 0.6em 0.5em;
+
+    }
+
+    body {
+    font-size: 12px;
+
+    }
+    .p-datatable-table, .p-paginator .p-paginator-element, .p-paginator .p-paginator-current, .p-button, .p-tabview-nav-link, .p-inputtext, .p-panel-header, .custom-section-header, .field-label{
+     font-size: 11px !important;
+    }
+}
+
+/** mobile mode **/
+@media screen and (max-width: 896px) {
+    /** move content up when in mobile mode **/
+    .layout-wrapper .layout-main {
+        padding-top: 50px;
+    }
+
+    /** move menu up in mobile mode **/
+    .layout-wrapper .layout-menu-container {
+        top: 50px;
+    }
+
+    /** adjust top for content-mask when mobile menu is visible **/
+    .layout-wrapper .layout-content-mask {
+        top: 50px;
+    }
+
+    /** no padding for form column **/
+    .form-column {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+    }
+
+    .p-panel .p-panel-content {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+    }
+}
+
+/** adapt topbar right panel **/
+.layout-wrapper .layout-topbar .layout-right-panel-button {
+    width: 50px;
+    color: white;
+}
+.layout-wrapper .layout-topbar .layout-right-panel-button a {
+    color: white;
+}
+
+/** login page body **/
+.login-body {
+    background-position: -160px;
+}
+
+/** footer **/
+.layout-wrapper {
+    position: relative;
+    padding-bottom: 50px;
+    min-height: 100vh;
+}
+
+.layout-footer {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    padding-top: 10px;
+    padding-right: 10px;
+}
+
+/** Tables */
+table {
+    width: 100%;
+}
+
+.table-header {
+    font-size: 1.5em;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+}
+
+.table-header-right {
+    display: flex;
+}
+
+body .p-table .p-table-tbody > tr {
+    background-color: white;
+}
+
+body .p-table .p-table-thead > tr > th {
+    background-color: #f8f9fa;
+}
+
+body .p-table .p-table-caption {
+    background-color: #f8f9fa;
+}
+
+.table-header-right-buttons {
+    margin-left: 5px;
+}
+
+.table-header-right-buttons .p-button {
+    margin-right: 5px;
+}
+
+.p-datatable .p-datatable-tbody > tr > td:not(:first-child) {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.p-datatable .p-datatable-tbody > tr > td:hover {
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-word;
+}
+
+/** Search input field above tables **/
+
+.global-search-input {
+    height: 31px;
+}
+
+.global-search-input .p-inputgroup-addon {
+    padding: 0px !important;
+    padding-top: 0.25em !important;
+    min-width: 2em !important;
+}
+
+.global-search-input i {
+    font-size: 1em;
+    color: #6c757d;
+}
+
+/** Forgot password and recovery password page design **/
+
+.forgot-password-body {
+    padding: 0px 20px;
+    overflow: hidden;
+    margin: 0 auto;
+    position: relative;
+    align-items: center;
+    height: 100vh !important;
+    height: calc(var(--vh, 1vh) * 100) !important;
+    justify-content: center;
+    display: flex;
+    background: url('/src/assets/layout/images/pages/login-bg.jpg') no-repeat;
+    background-size: cover;
+}
+
+.forgot-password-card {
+    background-color: rgba(255, 255, 255, 0.9);
+    width: 50%;
+}
+
+@media (max-width: 1200px) {
+    .forgot-password-card {
+        width: 100%;
+    }
+}
+
+@media (max-width: 800px) {
+    .forgot-password-card {
+        width: 100%;
+    }
+    .forgot-password-card-content-form {
+        width: 100% !important;
+    }
+    .forgot-password-card-content-logo {
+        display: none !important;
+    }
+}
+
+.forgot-password-card-content {
+    display: flex;
+
+    &-form {
+        padding: 20px;
+    }
+}
+
+.forgot-password-card-content-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.forgot-password-card-content-form {
+    width: 50%;
+}
+
+.forgot-password-card-content-form input {
+    margin-top: 20px;
+}
+
+.forgot-password-card-content-logo {
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.text-danger {
+    color: #ff0000;
+}
+
+/** Forgot password and recovery password page design end **/
+
+.p-tooltip {
+    width: 150px;
+    height: auto;
+    display: inline-block;
+}
+
+.p-tooltip .p-tooltip-text {
+    background-color: #106cc8;
+    color: #ffffff;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+/** Form section **/
+
+.form-section {
+    margin-bottom: 10px;
+}
+
+.form-section-hr {
+    border-top: 1px solid #ccc;
+}
+
+.form-section .p-panel-header {
+    border: none;
+    padding: 1px !important;
+    background: none;
+    margin-bottom: 10px;
+}
+
+.form-section .p-panel-content {
+    padding: 0px !important;
+    border: none;
+}
+
+/** Toast **/
+.toast {
+    z-index: 20000 !important;
+    white-space: pre-line;
+}
+
+/** Checkboxes **/
+
+.p-field-checkbox > label,
+.p-field-radiobutton > label {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    line-height: 1;
+}
+
+.mt-3 {
+    margin-top: 15px !important;
+}
+
+/** Hidden **/
+
+.hidden {
+    display: none;
+}
+
+

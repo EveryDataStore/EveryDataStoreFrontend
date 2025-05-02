@@ -1,0 +1,44 @@
+<p-dialog [styleClass]="'dialog'" [visible]="dialogVisible()" (visibleChange)="visibleChange.emit($event)" [closable]="true">
+    <form [formGroup]="form">
+        @for (field of fields(); track $index) {
+            <div class="wrapper">
+                <app-field-label [field]="field"></app-field-label>
+
+                <ng-container [ngSwitch]="field.type">
+                    <app-relation-field *ngSwitchCase="fieldType.RelationField"
+                                        [fieldCollectionService]="fieldCollectionService"
+                                        [formMetaField]="field"
+                                        [formMode]="FormMode.Use"></app-relation-field>
+
+                    <app-checkbox-field *ngSwitchCase="fieldType.CheckboxField"
+                                        [fieldCollectionService]="fieldCollectionService"
+                                        [formMetaField]="field"
+                                        [formMode]="FormMode.Use"></app-checkbox-field>
+
+                    <app-dropdown-field *ngSwitchCase="fieldType.DropdownField"
+                                        [fieldCollectionService]="fieldCollectionService"
+                                        [formMetaField]="field"
+                                        [formMode]="FormMode.Use"></app-dropdown-field>
+
+                    <app-text-field *ngSwitchDefault
+                                    [showErrors]="false"
+                                    [fieldCollectionService]="fieldCollectionService"
+                                    [formMetaField]="field"
+                                    [formMode]="FormMode.Use"></app-text-field>
+
+                </ng-container>
+            </div>
+        }
+    </form>
+
+    <p-footer>
+        <button pButton type="button" icon="fa fa-trash" (click)="onClearClicked()"
+                [label]="'clear' | translate" class="p-button-danger" style="float: left;"></button>
+
+        <button pButton type="button" icon="fa fa-check" (click)="onOkClicked()"
+                label="Ok" class="p-button-success"></button>
+
+        <button pButton type="button" icon="fa fa-times" [label]="'close' | translate"
+                class="p-button-secondary" (click)="visibleChange.emit(false)"></button>
+    </p-footer>
+</p-dialog>

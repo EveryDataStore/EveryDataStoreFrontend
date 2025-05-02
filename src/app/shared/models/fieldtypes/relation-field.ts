@@ -1,8 +1,8 @@
-import { FieldSettingConditions } from '../field-settings/field-setting-conditions';
-import { FormMetaField } from '../entities/form-meta-field';
-import { FieldSetting, FieldSettings } from '../field-settings/field-setting';
-import { FieldSettingValues } from '../field-settings/field-setting-values';
-import { FieldType } from '../field-type';
+import {FieldSettingConditions} from '../field-settings/field-setting-conditions';
+import {FormMetaField} from '../entities/form-meta-field';
+import {FieldSetting, FieldSettings} from '../field-settings/field-setting';
+import {FieldSettingValues} from '../field-settings/field-setting-values';
+import {FieldType} from '../field-type';
 
 export class RelationField extends FormMetaField {
     constructor() {
@@ -22,17 +22,30 @@ export class RelationField extends FormMetaField {
             required,
             showInResultList,
             FieldSettings.ShowInItemView,
+            FieldSettings.ShowInSearchFilter,
             FieldSettings.RelationData,
             FieldSettings.RelationType,
             recordSelect,
             modelSelect,
             displayFields,
-            fieldMapping
+            fieldMapping,
         ]);
-        recordSelect.conditions = new FieldSettingConditions().eq(FieldSettings.RelationData, FieldSettingValues.Record);
+        recordSelect.conditions = new FieldSettingConditions().eq(
+            FieldSettings.RelationData,
+            FieldSettingValues.Record
+        );
         modelSelect.conditions = new FieldSettingConditions().eq(FieldSettings.RelationData, FieldSettingValues.Model);
-        fieldMapping.conditions = new FieldSettingConditions().eq(FieldSettings.RelationType, FieldSettingValues.FieldMapping);
-        showInResultList.disabledConditions = new FieldSettingConditions().neq(FieldSettings.RelationType, FieldSettingValues.HasOne);
-        required.disabledConditions = new FieldSettingConditions().eq(FieldSettings.RelationType, FieldSettingValues.FieldMapping);
+        fieldMapping.conditions = new FieldSettingConditions().eq(
+            FieldSettings.RelationType,
+            FieldSettingValues.FieldMapping
+        );
+        showInResultList.disabledConditions = new FieldSettingConditions().neq(
+            FieldSettings.RelationType,
+            FieldSettingValues.HasOne
+        );
+        required.disabledConditions = new FieldSettingConditions().eq(
+            FieldSettings.RelationType,
+            FieldSettingValues.FieldMapping
+        );
     }
 }

@@ -26,6 +26,11 @@
     display: inline-block;
 }
 
+.layout-wrapper.layout-horizontal .layout-menu-container .layout-menu > li > a .layout-menuitem-icon{
+    display: none;
+}
+
+
 @media screen and (max-width: 896px) {
     .right-menu, .left-menu {
         float: none !important;
@@ -36,4 +41,3 @@
         border-top: 1px solid rgb(206, 205, 205);
     }
 }
-

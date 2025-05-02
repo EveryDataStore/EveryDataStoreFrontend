@@ -1,0 +1,10 @@
+<p-card class="w-last-login modal-table">
+    <ng-template pTemplate="header">
+        <div class="p-card-title ng-star-inserted center">
+            {{ widget().Title }}
+        </div>
+    </ng-template>
+    <h4>Date : {{widget().WidgetData.Date | date :'short'}}</h4>
+    <h4>IP : {{widget().WidgetData.IP}}</h4>
+    <h4>{{widget().WidgetData.Status}}</h4>
+</p-card>

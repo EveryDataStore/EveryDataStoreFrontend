@@ -1,13 +1,14 @@
-import { RecordFormData } from 'src/app/shared/models/entities/record-form-data';
-import { ApiService } from './../../services/api.service';
-import { RecordItemData } from './../entities/record-item-data';
-import { FormMetaField } from '../entities/form-meta-field';
-import { FieldSettings } from '../field-settings/field-setting';
-import { ItemData } from '../entities/item-data';
-import { CustomRecordFormData } from '../entities/custom-record-form-data';
+import {RecordFormData} from 'src/app/shared/models/entities/record-form-data';
+import {ApiService} from './../../services/api.service';
+import {RecordItemData} from './../entities/record-item-data';
+import {FormMetaField} from '../entities/form-meta-field';
+import {FieldSettings} from '../field-settings/field-setting';
+import {ItemData} from '../entities/item-data';
+import {CustomRecordFormData} from '../entities/custom-record-form-data';
 
 export enum ItemsType {
-    Record, Model
+    Record,
+    Model,
 }
 
 export interface DataRow {
@@ -30,7 +31,6 @@ export class TableData {
     searchTerm = '';
     itemsPerPage: number;
 
-
     private datasetType: ItemsType;
     private datasetId: string;
     private datasetTitle: string;
@@ -43,7 +43,7 @@ export class TableData {
     }
 
     public getDatasetId() {
-      return this.datasetId;
+        return this.datasetId;
     }
 
     public clear() {
@@ -77,11 +77,23 @@ export class TableData {
 
     // --- Record ---
 
-    public async loadRecordItemsPaged(recordSlug: string, page: number, itemsPerPage: number, sortColumn = '', sortOrder = 1) {
+    public async loadRecordItemsPaged(
+        recordSlug: string,
+        page: number,
+        itemsPerPage: number,
+        sortColumn = '',
+        sortOrder = 1
+    ) {
         await this.setupRecordCols(recordSlug);
 
-        const recordItems =
-            await this.apiService.getRecordItems(recordSlug, page, itemsPerPage, sortColumn, sortOrder, this.searchTerm);
+        const recordItems = await this.apiService.getRecordItems({
+            recordSlug,
+            page,
+            count: itemsPerPage,
+            sortColumn,
+            sortOrder,
+            searchTerm: this.searchTerm,
+        });
         this.datasetTitle = this.recordFormData.Record.Title;
         this.fillRowsFromRecordItems(recordItems.Items);
 
@@ -112,11 +124,13 @@ export class TableData {
         }
 
         this.rows = [];
-        if (recordItems.length <= 0) { return; }
+        if (recordItems.length <= 0) {
+            return;
+        }
 
         recordItems.forEach((rid: RecordItemData) => {
             const rowData = {};
-            rid.ItemData.forEach(itemData => {
+            rid.ItemData.forEach((itemData) => {
                 if (itemData.FormFieldSlug !== null) {
                     if (!rowData[itemData.FormFieldSlug]) {
                         rowData[itemData.FormFieldSlug] = this.getFormattedValueFromItemData(itemData);
@@ -129,10 +143,23 @@ export class TableData {
 
     // --- Model ---
 
-    public async loadModelItemsPaged(modelName: string, page: number, itemsPerPage: number, sortColumn = '', sortOrder = 1) {
+    public async loadModelItemsPaged(
+        modelName: string,
+        page: number,
+        itemsPerPage: number,
+        sortColumn = '',
+        sortOrder = 1
+    ) {
         await this.setupModelCols(modelName);
 
-        const modelItems = await this.apiService.getModelItems(modelName, page, itemsPerPage, sortColumn, sortOrder, this.searchTerm);
+        const modelItems = await this.apiService.getModelItems(
+            modelName,
+            page,
+            itemsPerPage,
+            sortColumn,
+            sortOrder,
+            this.searchTerm
+        );
 
         this.datasetTitle = modelName;
         this.fillRowsFromModelItems(modelItems);
@@ -151,11 +178,13 @@ export class TableData {
 
     public fillRowsFromModelItems(modelItems: []) {
         this.rows = [];
-        if (modelItems.length <= 0) { return; }
+        if (modelItems.length <= 0) {
+            return;
+        }
 
-        modelItems.forEach(modelItem => {
+        modelItems.forEach((modelItem) => {
             const rowData = {};
-            Object.keys(this.fields).forEach(fieldName => {
+            Object.keys(this.fields).forEach((fieldName) => {
                 const field = this.fields[fieldName];
                 rowData[fieldName] = field.formatValueForViewing(modelItem[fieldName]);
             });
@@ -166,41 +195,55 @@ export class TableData {
 
     public fillColsFromFormMetaFields(formMetaFields: FormMetaField[]) {
         this.cols = [];
-        formMetaFields.forEach(field => {
-            if (field.getSettingValueAsBoolean(FieldSettings.ShowInResultList) && field.getSettingValueAsBoolean(FieldSettings.Active)) {
-              this.cols.push({ label : field.label, fieldSlug: field.Slug, fieldType: field.Type, fieldTextType: field.textType});
-              this.fields[field.Slug] = field;
+        formMetaFields.forEach((field) => {
+            if (
+                field.getSettingValueAsBoolean(FieldSettings.ShowInResultList) &&
+                field.getSettingValueAsBoolean(FieldSettings.Active)
+            ) {
+                this.cols.push({
+                    label: field.label,
+                    fieldSlug: field.Slug,
+                    fieldType: field.Type,
+                    fieldTextType: field.textType,
+                });
+                this.fields[field.Slug] = field;
             }
         });
     }
 
     public fillColsFromModelColsAndFormMetaFields(columns: {}, formMetaFields: FormMetaField[]) {
-        Object.keys(columns).forEach(fieldName => {
-            const field = formMetaFields.find(f => f.Name === fieldName);
+        Object.keys(columns).forEach((fieldName) => {
+            const field = formMetaFields.find((f) => f.Name === fieldName);
             if (field) {
-                this.cols.push({label: columns[fieldName], fieldSlug: fieldName, fieldType: field.Type, fieldTextType: field.textType});
+                this.cols.push({
+                    label: columns[fieldName],
+                    fieldSlug: fieldName,
+                    fieldType: field.Type,
+                    fieldTextType: field.textType,
+                });
                 this.fields[fieldName] = field;
             }
-          });
+        });
     }
-
 
     public getDatasetTitle() {
         return this.datasetTitle;
     }
 
     private async setupModelCols(modelName: string) {
-      if (!this.colsInfoLoaded) {
-        this.colsInfoLoaded = true;
-        const columns = await this.apiService.getModelSummaryFields(modelName);
-        const formFields = await this.apiService.getFormFieldsForModel(modelName);
-        this.fillColsFromModelColsAndFormMetaFields(columns, formFields.getFormMetaFields());
-      }
+        if (!this.colsInfoLoaded) {
+            this.colsInfoLoaded = true;
+            const columns = await this.apiService.getModelSummaryFields(modelName);
+            const formFields = await this.apiService.getFormFieldsForModel(modelName);
+            this.fillColsFromModelColsAndFormMetaFields(columns, formFields.getFormMetaFields());
+        }
     }
 
     private getFormattedValueFromItemData(itemData: ItemData) {
         const field: FormMetaField = this.fields[itemData.FormFieldSlug];
-        if (field === undefined) { return ''; }
+        if (field === undefined) {
+            return '';
+        }
 
         return field.formatValueForViewing(itemData.Value);
     }

@@ -1,7 +1,7 @@
-import { TranslateService } from '@ngx-translate/core';
-import { FormMetaField } from '../entities/form-meta-field';
-import { FieldSettings } from '../field-settings/field-setting';
-import { FieldType } from '../field-type';
+import {TranslateService} from '@ngx-translate/core';
+import {FormMetaField} from '../entities/form-meta-field';
+import {FieldSetting, FieldSettings} from '../field-settings/field-setting';
+import {FieldType} from '../field-type';
 
 export class CheckboxField extends FormMetaField {
     private yes = 'Yes';
@@ -17,8 +17,10 @@ export class CheckboxField extends FormMetaField {
             FieldSettings.Info,
             FieldSettings.Active,
             FieldSettings.ShowInResultList,
+            FieldSettings.ShowInSearchFilter,
             FieldSettings.Required,
-            FieldSettings.Options]);
+            FieldSettings.Options,
+        ]);
     }
 
     public afterSetup() {
@@ -27,7 +29,7 @@ export class CheckboxField extends FormMetaField {
     }
 
     public formatValueForViewing(rawValue: any): string {
-        if (typeof(rawValue) === 'string' || typeof(rawValue) === 'number') {
+        if (typeof rawValue === 'string' || typeof rawValue === 'number') {
             return this.valToBooleanString(rawValue);
         } else {
             return super.formatValueForViewing(rawValue);
@@ -36,6 +38,6 @@ export class CheckboxField extends FormMetaField {
 
     private valToBooleanString(value) {
         const valNumber = value as number;
-        return (valNumber === 1) ? this.yes : this.no;
+        return valNumber === 1 ? this.yes : this.no;
     }
 }

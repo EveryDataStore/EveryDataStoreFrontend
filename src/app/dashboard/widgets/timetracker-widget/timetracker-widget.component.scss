@@ -1,0 +1,26 @@
+.container-time-tracker{
+    display: block;
+    height: 115px;
+}
+
+
+.container-check-in-out-button{
+    width: 100% !important;
+    display: block;
+    background-color: green;
+}
+
+.container-check-in-out-button .p-button{
+    width: 100% !important;
+     text-align: center;
+     padding-top: 9px;
+     padding-bottom: 10px;
+     font-size: 16px;
+     font-weight: bold;
+}
+
+
+.container-clock h3{
+    text-align: center;
+    margin-bottom: 15px;
+}

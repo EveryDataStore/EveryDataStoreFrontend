@@ -18,7 +18,28 @@
         </div>
     </ng-template>
     <ng-template pTemplate="summary">
-        <full-calendar [options]="calendarconfig"></full-calendar>
+        <p-tabView *ngIf="calendarMembers.length > 0" [scrollable]="true" (onChange)="onCalendarMemberChanged($event)">
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-2 h-2rem">
+                        <span class="font-bold white-space-nowrap m-0">
+                            {{'all-entries' | translate}}
+                        </span>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+            <p-tabPanel *ngFor="let member of calendarMembers">
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-2 h-2rem">
+                        <p-avatar [image]="member.Icon" shape="circle"></p-avatar>
+                        <span class="font-bold white-space-nowrap m-0">
+                           {{member.FirstName}} {{member.Surname}}
+                        </span>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+        </p-tabView>
+        <full-calendar [options]="calendarConfig"></full-calendar>
     </ng-template>
 </p-table>
 
@@ -51,17 +72,23 @@
                 <div class="col-12 md:col-6 lg:col-6 header-buttons-right">
 
                     <div class="table-header-right" >
-                        <div *ngIf="showFilter">
-                            <p-calendar (onSelect)="onCreatedFrom($event)" dateFormat="dd.mm.yy"
-                                        placeholder="{{'created-from' | translate}}" [appendTo]="'body'"></p-calendar>
-                        </div>
-                        <div *ngIf="showFilter">
-                            <p-calendar (onSelect)="onCreatedTo($event)" dateFormat="dd.mm.yy"
-                                        placeholder="{{'created-to' | translate}}" [appendTo]="'body'"></p-calendar>
-                        </div>
+                        @if (showDateFilter()) {
+                            <div>
+                                <p-calendar (onSelect)="onCreatedFrom($event)" dateFormat="dd.mm.yy"
+                                            placeholder="{{'created-from' | translate}}" [appendTo]="'body'"></p-calendar>
+                            </div>
+                            <div>
+                                <p-calendar (onSelect)="onCreatedTo($event)" dateFormat="dd.mm.yy"
+                                            placeholder="{{'created-to' | translate}}" [appendTo]="'body'"></p-calendar>
+                            </div>
+                        }
                         <div class="p-inputgroup" [ngClass]="'global-search-input'" style="float: right; width: 100%; padding: 0">
                             <span class="p-inputgroup-addon" [ngClass]="langDir=='rtl'?'p-inputgroup-addon-custom':''">
-                                <i class="pi  pi-calendar p-pi-filter" (click)="onShowFilter()"></i></span>
+                                <i class="pi  pi-calendar p-pi-filter" (click)="onShowDateFilter()"></i></span>
+                            @if (searchFilterFields.length > 0) {
+                                <span class="p-inputgroup-addon" [ngClass]="langDir=='rtl'?'p-inputgroup-addon-custom':''">
+                                    <i class="pi  pi-filter p-pi-filter" (click)="onFilterDialogButtonClicked()" ></i></span>
+                            }
                             <input type="text" pInputText placeholder="{{'search-items' | translate}}" (input)="search($any($event.target).value)">
                         </div>
                         <div class="table-header-right-buttons">
@@ -108,9 +135,8 @@
 
         <td *ngFor="let col of tableData.cols" (click)="onRowClicked(row.itemSlug)">
             <span class="p-column-title">{{col.label}}</span>
-
-            <div  *ngIf="col.fieldTextType === 'color' && row[col.fieldSlug]" class="">
-                <span class="color-field" [ngStyle]="{'width':'65px', 'display':'block','padding':'5px', 'color':'#fff', 'background-color': row[col.fieldSlug]}">{{row[col.fieldSlug]}}</span>
+            <div  *ngIf="col.fieldTextType === 'color'" class="">
+                <div class="color-field" [ngStyle]="{'width':'70px', 'display':'block','padding':'5px', 'color':'#fff', 'background-color': row.data[col.fieldSlug]}"> {{row.data[col.fieldSlug]}}</div>
             </div>
             <!--{{row[col.fieldSlug][0] | json}}-->
             <span
@@ -158,7 +184,10 @@
     </ng-template>
 </p-table>
 
-
+<app-filter-dialog [dialogVisible]="filterDialogVisible()"
+                   [fields]="searchFilterFields"
+                   (filter)="onFilter($event)"
+                   (visibleChange)="filterDialogVisible.set($event)"></app-filter-dialog>
 
 <!--<p-dialog *ngIf="downloadURL" [(visible)]="isVisibleDownloadDialog" [closable]="true"
           [style]="{'width': '50%'}"

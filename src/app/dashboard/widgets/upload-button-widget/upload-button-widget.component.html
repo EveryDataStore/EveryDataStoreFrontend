@@ -1,0 +1,36 @@
+<p-card class="temp-box modal-table">
+    <ng-template pTemplate="header">
+        <div class="p-card-title ng-star-inserted center">
+            {{ widget().Title }}
+        </div>
+    </ng-template>
+    <div class="temp conatiner-file-upload-button" id="conatiner-file-upload-button">
+        <div class="col-12">
+            <div class="ocr-checkbox" *ngIf="showSyncOCRBtn">
+                <p-checkbox 
+                    [(ngModel)]="syncOCR"
+                    [binary]="true"
+                    inputId="syncOcr" />
+                <label for="syncOcr"> {{'sync-ocr' | translate}}</label>
+            </div>
+        </div>
+             <p-fileUpload #fileUpload
+                  [name]="widgetConfig()['FieldName']"
+                  customUpload="true"
+                  [showUploadButton]="true"
+                  [showCancelButton]="true"
+                  (onRemove)="onRemove(fileUpload)"
+                  (onClear)="onRemove(fileUpload)"
+                  (uploadHandler)="onUpload($event,fileUpload)"
+                  [auto]="true"
+                  [multiple]="false"
+                  [fileLimit]="true"
+                  [maxFileSize]= "widgetConfig()['FileAllowedSize']"
+                  [accept]="widgetConfig()['FieldUploadAccept']">
+                </p-fileUpload>
+        <div class="success-msg" *ngIf="showSuccessMSG">
+            <span>{{'upload-btn-success' | translate}}</span>
+        </div>
+    </div>
+</p-card>
+

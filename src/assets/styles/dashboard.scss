@@ -1,0 +1,34 @@
+.dashboard {
+    .header-buttons {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        .p-button-icon {
+            color: white;
+        }
+    }
+
+    .modal-table .p-card {
+        height: 300px;
+    }
+
+    .p-datatable,
+    .w-calendar .p-calendar {
+        height: 200px;
+        overflow-y: auto;
+    }
+
+    .p-card .p-card-content {
+        padding: 1rem 0;
+    }
+
+    .w-count-box {
+        text-align: center;
+        padding-bottom: 15px;
+        padding-top: 15px;
+        font-size: 15px;
+        font-weight: bold;
+        color: #fff;
+    }
+}

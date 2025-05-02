@@ -1,0 +1,8 @@
+<p-card>
+    <ng-template pTemplate="header">
+        <div class="p-card-title ng-star-inserted center">
+            {{ widget().Title }}
+        </div>
+    </ng-template>
+    <p-chart type="doughnut" height="300" [data]="widget().WidgetData"></p-chart>
+</p-card>

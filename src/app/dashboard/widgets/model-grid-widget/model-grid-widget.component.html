@@ -1,0 +1,22 @@
+<p-card class="modal-table">
+    <ng-template pTemplate="header">
+        <div class="p-card-title">
+            {{ widget().Title }}
+            <div class="header-buttons">
+                <a pButton class="p-button-primary p-card-left-btn" icon="pi pi-plus-circle" [routerLink]="['/', 'admin', widget().WidgetData.Slug, 'new-item']"></a>
+                <a pButton class="p-button-secondary p-card-right-btn" icon="pi pi-search" [routerLink]="['/', 'admin', widget().WidgetData.Slug]"></a>
+            </div>
+        </div>
+    </ng-template>
+    <p-table (onRowSelect)="widgetService.onModelGridSelect($event,widget().WidgetData.Slug)" [value]="widget().WidgetData.Items" selectionMode="single">
+        <ng-template pTemplate="body" let-product>
+            <tr [pSelectableRow]="product">
+                <td class="modal-table-img"><img [src]="product.avatarURL ==null?'./assets/avatar/avatar-default.png':product.avatarURL"
+                                                 alt="Image"></td>
+                <td class="modal-first-name">{{product.FirstName}}</td>
+                <td class="modal-last-name">{{product.Surname}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
+

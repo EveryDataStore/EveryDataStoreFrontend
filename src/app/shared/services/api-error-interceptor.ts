@@ -17,7 +17,7 @@ import { Warning } from '../libs/warning';
 
 @Injectable()
 export class ApiErrorInterceptor implements HttpInterceptor {
-
+   errorText: string;
   constructor(private authService: AuthService,
               private settingsService: SettingsService,
               private translateService: TranslateService) {
@@ -47,19 +47,22 @@ export class ApiErrorInterceptor implements HttpInterceptor {
             // The response body may contain clues as to what went wrong.
             console.error(
               `Backend returned code ${error.status}, ` +
-              `msg: ${error.error}`);
-            console.error(error);
+              `msg: ${error.statusText}`);
+
             if (error.status === 400 || error.status === 401 || error.status === 403) {
               this.authService.logout().then(() => {
                 // tslint:disable-next-line: no-console
                 console.info('logged out successfully');
               });
-              return throwError(new Error('Auth-error or expired token, please log in again.'));
+              this.errorText = error.statusText ? error.statusText: 'Auth-error or expired token, please log in again.'
+              return throwError(new Error(this.errorText));
             } else {
               if (error.status === 404) {
-                return throwError(new Error('Resource not found!'));
+                this.errorText = error.statusText ? error.statusText: 'Resource not found!'
+                return throwError(new Error(this.errorText));
               }
-              return throwError(new Error('An error in the communication with the backend occurred!'));
+              this.errorText = error.statusText ? error.statusText: 'An error in the communication with the backend occurred!'
+              return throwError(new Error(this.errorText));
             }
           }
         } else {

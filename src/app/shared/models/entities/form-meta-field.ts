@@ -1,348 +1,361 @@
-import { FieldSettingNames } from './../field-settings/field-setting-names';
-import { ServicesProviderService } from './../../services/services-provider.service';
-import { FieldSetting, FieldSettings } from '../field-settings/field-setting';
-import { FieldSettingEditType } from '../field-settings/field-setting-edit-type';
-import { FieldSettingValues } from '../field-settings/field-setting-values';
-import { FieldType } from '../field-type';
-import { TextType } from '../text-type';
-import { FieldSettingKeyValue} from './field-setting-key-value';
-import { isObject } from '../../libs/typechecks';
+import {FieldSettingNames} from '../field-settings/field-setting-names';
+import {ServicesProviderService} from '../../services/services-provider.service';
+import {FieldSetting, FieldSettings} from '../field-settings/field-setting';
+import {FieldSettingEditType} from '../field-settings/field-setting-edit-type';
+import {FieldSettingValues} from '../field-settings/field-setting-values';
+import {FieldType} from '../field-type';
+import {TextType} from '../text-type';
+import {FieldSettingKeyValue} from './field-setting-key-value';
+import {isObject} from '../../libs/typechecks';
+import {format} from 'date-fns';
+import {DateTimeFormatService} from '../../services/date-time-format.service';
+import {isEmpty} from 'lodash';
 
 export class FormMetaField {
+    Slug: string;
+    Type: FieldType;
+    Index: number;
+    Name: string;
+    Setting: FieldSettingKeyValue[] = [];
+    Value: any;
 
-   Slug: string;
-   Type: FieldType;
-   Index: number;
-   Name: string;
-   Setting: FieldSettingKeyValue[] = [];
-   Value: any;
+    autoOpen = false;
 
-   autoOpen = false;
+    private fieldSettingEdits: FieldSetting[] = [];
+    private servicesProviderService: ServicesProviderService;
+    private dateTimeFormatService = new DateTimeFormatService();
 
-   private fieldSettingEdits: FieldSetting[] = [];
-   private servicesProviderService: ServicesProviderService;
+    /**
+     * Serialize method
+     */
+    public toJSON() {
+        // put in here all fields that should not be converted to json
+        const {fieldSettingEdits, servicesProviderService: servicesProvider, ...rest} = this;
+        return rest;
+    }
 
-   constructor() {
-   }
+    public setServicesProviderService(servicesProviderService: ServicesProviderService) {
+        this.servicesProviderService = servicesProviderService;
+    }
 
-   /**
-    * Serialize method
-    */
-   public toJSON() {
-      // put in here all fields that should not be converted to json
-      const { fieldSettingEdits, servicesProviderService: servicesProvider, ...rest } = this;
-      return rest;
-   }
+    public getTranslateService() {
+        return this.servicesProviderService.getTranslateService();
+    }
 
-   public setServicesProviderService(servicesProviderService: ServicesProviderService) {
-      this.servicesProviderService = servicesProviderService;
-   }
+    public afterSetup() {}
 
-   public getTranslateService() {
-      return this.servicesProviderService.getTranslateService();
-   }
+    get label(): string {
+        return this.getSettingValue(FieldSettings.Label);
+    }
 
-   public afterSetup() {
-   }
+    set label(value: string) {
+        this.setSettingValue(FieldSettings.Label, value);
+    }
 
-   get label(): string {
-      return this.getSettingValue(FieldSettings.Label);
-   }
+    get type(): FieldType {
+        return this.Type;
+    }
 
-   set label(value: string) {
-      this.setSettingValue(FieldSettings.Label, value);
-   }
+    set type(type: FieldType) {
+        this.Type = type;
+    }
 
-   get type(): FieldType {
-      return this.Type;
-   }
+    get slug(): string {
+        return this.Slug;
+    }
 
-   set type(type: FieldType) {
-      this.Type = type;
-   }
+    get name(): string {
+        return this.Name;
+    }
 
-   get slug(): string {
-      return this.Slug;
-   }
+    get placeholder(): string {
+        return this.getSettingValue(FieldSettings.Placeholder);
+    }
 
-   get name(): string {
-      return this.Name;
-   }
+    get info(): string {
+        return this.getSettingValue(FieldSettings.Info);
+    }
 
-   get placeholder(): string {
-      return this.getSettingValue(FieldSettings.Placeholder);
-   }
+    get uploadMaxSize(): string {
+        return this.getSettingValue(FieldSettings.UploadMaxSize);
+    }
 
-   get info(): string {
-      return this.getSettingValue(FieldSettings.Info);
-   }
+    get uploadMultiple(): string {
+        return this.getSettingValue(FieldSettings.MultipleSelect);
+    }
 
-   get uploadMaxSize(): string {
-      return this.getSettingValue(FieldSettings.UploadMaxSize);
-   }
-
-   get uploadMultiple(): string {
-      return this.getSettingValue(FieldSettings.MultipleSelect);
-   }
-
-   get uploadMaxFile(): string{
+    get uploadMaxFile(): string {
         return this.getSettingValue(FieldSettings.UploadMaxFile);
     }
 
-   get uploadAccepts(): string {
-      return this.getSettingValue(FieldSettings.UploadAccepts);
-   }
+    get uploadAccepts(): string {
+        return this.getSettingValue(FieldSettings.UploadAccepts);
+    }
 
-   get uploadName(): string {
-      return this.getSettingValue(FieldSettings.UploadName);
-   }
+    get uploadName(): string {
+        return this.getSettingValue(FieldSettings.UploadName);
+    }
 
-   get required(): boolean {
-      return this.settingToBoolean(FieldSettings.Required);
-   }
+    get required(): boolean {
+        return this.settingToBoolean(FieldSettings.Required);
+    }
 
-   get active(): boolean {
-      return this.settingToBoolean(FieldSettings.Active);
-   }
+    get active(): boolean {
+        return this.settingToBoolean(FieldSettings.Active);
+    }
 
-   get hidden(): boolean {
-      return this.settingToBoolean(FieldSettings.Hidden);
-   }
+    get hidden(): boolean {
+        return this.settingToBoolean(FieldSettings.Hidden);
+    }
 
-   get dateFormat(): string {
-      return this.getSettingValue(FieldSettings.DateFormat);
-   }
+    get dateFormat(): string {
+        return this.getSettingValue(FieldSettings.DateFormat);
+    }
 
-   get hourFormat(): string {
-      return this.getSettingValue(FieldSettings.HourFormat);
-   }
+    get hourFormat(): string {
+        return this.getSettingValue(FieldSettings.HourFormat);
+    }
 
-   get showSeconds(): boolean {
-      return this.getSettingValueAsBoolean(FieldSettings.ShowSeconds);
-   }
+    get is12HourFormat(): boolean {
+        return this.hourFormat === '12';
+    }
 
-   get textType(): TextType {
-      return this.getSettingValue(FieldSettings.TextType);
-   }
+    get showSeconds(): boolean {
+        return this.getSettingValueAsBoolean(FieldSettings.ShowSeconds);
+    }
 
-   get maxLength(): string {
-     let maxL: string;
-     if (this.Type === FieldType.TextField && FieldSettings.Maxlength.showForTextTypes) {
-       if (FieldSettings.Maxlength.showForTextTypes.find(fs => fs === this.textType)) {
-         maxL = this.getSettingValue(FieldSettings.Maxlength);
-       }
-     }
-     return maxL;
-   }
+    get textType(): TextType {
+        return this.getSettingValue(FieldSettings.TextType);
+    }
 
-   get value(): any {
-      return (this.Value != null) ? this.Value : this.getSettingValue(FieldSettings.DefaultValue);
-   }
+    get maxLength(): string {
+        let maxL: string;
+        if (this.Type === FieldType.TextField && FieldSettings.Maxlength.showForTextTypes) {
+            if (FieldSettings.Maxlength.showForTextTypes.find((fs) => fs === this.textType)) {
+                maxL = this.getSettingValue(FieldSettings.Maxlength);
+            }
+        }
+        return maxL;
+    }
 
-   public getFieldSettingEdits() {
-      this.fieldSettingEdits.forEach((fieldSettingEdit, index) => {
+    get value(): any {
+        return this.Value != null ? this.Value : this.getSettingValue(FieldSettings.DefaultValue);
+    }
 
-         if (fieldSettingEdit.type === FieldSettingEditType.Checkbox) {
-            fieldSettingEdit.value = this.getSettingValueAsBoolean(fieldSettingEdit);
-         } else {
-            const value = this.getSettingValue(fieldSettingEdit);
-            if (fieldSettingEdit.converter !== undefined) {
-               fieldSettingEdit.value = fieldSettingEdit.converter.fromValueToString(value);
+    public getFieldSettingEdits() {
+        this.fieldSettingEdits.forEach((fieldSettingEdit, index) => {
+            if (fieldSettingEdit.type === FieldSettingEditType.Checkbox) {
+                fieldSettingEdit.value = this.getSettingValueAsBoolean(fieldSettingEdit);
             } else {
-               fieldSettingEdit.value = value;
+                const value = this.getSettingValue(fieldSettingEdit);
+                if (fieldSettingEdit.converter !== undefined) {
+                    fieldSettingEdit.value = fieldSettingEdit.converter.fromValueToString(value);
+                } else {
+                    fieldSettingEdit.value = value;
+                }
             }
-         }
 
-         if ((fieldSettingEdit.name === FieldSettingNames.TextType) && (!fieldSettingEdit.value)) {
-           fieldSettingEdit.value = TextType.Text;
-         }
-
-         if ((fieldSettingEdit.getValuesFromSetting) && (fieldSettingEdit.settingName)) {
-            const options = this.servicesProviderService.getSettingsService().getAsJson(fieldSettingEdit.settingName);
-            if (options && (Object.keys(options).length > 0)) {
-               fieldSettingEdit.options = options;
+            if (fieldSettingEdit.name === FieldSettingNames.TextType && !fieldSettingEdit.value) {
+                fieldSettingEdit.value = TextType.Text;
             }
-         }
-      });
-      return this.fieldSettingEdits;
-   }
 
-   public getFieldSettingOptions(fieldSetting: FieldSetting) {
-      const fieldSettingEdit = this.getFieldSettingEdits().find(fe => fe === fieldSetting);
-      if (fieldSettingEdit) {
-         return fieldSettingEdit.options;
-      }
-      return [];
-   }
+            if (fieldSettingEdit.getValuesFromSetting && fieldSettingEdit.settingName) {
+                const options = this.servicesProviderService
+                    .getSettingsService()
+                    .getAsJson(fieldSettingEdit.settingName);
+                if (options && Object.keys(options).length > 0) {
+                    fieldSettingEdit.options = options;
+                }
+            }
+        });
+        return this.fieldSettingEdits;
+    }
 
-   public getSelectedFieldSettingOption(fieldSetting: FieldSetting) {
-      const options = this.getFieldSettingOptions(fieldSetting);
-      const value = this.getSettingValue(fieldSetting);
-      const option = options.find(o => o.value === value);
-      return option;
-   }
+    public getFieldSettingOptions(fieldSetting: FieldSetting) {
+        const fieldSettingEdit = this.getFieldSettingEdits().find((fe) => fe === fieldSetting);
+        if (fieldSettingEdit) {
+            return fieldSettingEdit.options;
+        }
+        return [];
+    }
 
-   public getSelectedFieldSettingOptionLabel(fieldSetting: FieldSetting) {
-      const option = this.getSelectedFieldSettingOption(fieldSetting);
-      const value = this.getSettingValue(fieldSetting);
-      if (option) {
-         if (option['symbol']) {
-            return option['symbol'];
-         }
-         return option.label;
-      }
-      return value;
-   }
+    public getSelectedFieldSettingOption(fieldSetting: FieldSetting) {
+        const options = this.getFieldSettingOptions(fieldSetting);
+        const value = this.getSettingValue(fieldSetting);
+        const option = options.find((o) => o.value === value);
+        return option;
+    }
 
-   public setFieldSettingEdits(fieldSettingEdits: FieldSetting[]) {
-      this.fieldSettingEdits = fieldSettingEdits;
-   }
+    public getSelectedFieldSettingOptionLabel(fieldSetting: FieldSetting) {
+        const option = this.getSelectedFieldSettingOption(fieldSetting);
+        const value = this.getSettingValue(fieldSetting);
+        if (option) {
+            if (option['symbol']) {
+                return option['symbol'];
+            }
+            return option.label;
+        }
+        return value;
+    }
 
-   public getUnit() {
-      let unit = null;
-      if (this.getSettingValue(FieldSettings.TextType) === TextType.Unit) {
-        unit = this.getSelectedFieldSettingOptionLabel(FieldSettings.UnitType);
-      }
+    public setFieldSettingEdits(fieldSettingEdits: FieldSetting[]) {
+        this.fieldSettingEdits = fieldSettingEdits;
+    }
 
-      if (this.getSettingValue(FieldSettings.TextType) === TextType.Money) {
-        unit = this.getSelectedFieldSettingOptionLabel(FieldSettings.MoneyType);
-      }
+    public getUnit() {
+        let unit = null;
+        if (this.getSettingValue(FieldSettings.TextType) === TextType.Unit) {
+            unit = this.getSelectedFieldSettingOptionLabel(FieldSettings.UnitType);
+        }
 
-      if (this.getSettingValue(FieldSettings.NumberType) === 'percent') {
-         unit = '%';
-      }
+        if (this.getSettingValue(FieldSettings.TextType) === TextType.Money) {
+            unit = this.getSelectedFieldSettingOptionLabel(FieldSettings.MoneyType);
+        }
 
-      return unit;
-   }
+        if (this.getSettingValue(FieldSettings.NumberType) === 'percent') {
+            unit = '%';
+        }
 
-   public getSettingValue(fieldSetting: FieldSetting): any {
-      const setting = this.getSetting(fieldSetting);
-      return (setting != null) ? setting.value : null;
-   }
+        return unit;
+    }
 
-   public getSettingValueAsString(fieldSetting: FieldSetting): string {
-      const setting = this.getSetting(fieldSetting);
-      return (setting != null) ? setting.value : '';
-   }
+    public getSettingValue(fieldSetting: FieldSetting): any {
+        const setting = this.getSetting(fieldSetting);
+        return setting != null ? setting.value : null;
+    }
 
-   public getSettingValueAsBoolean(fieldSetting: FieldSetting): boolean {
-      const settingString = this.getSettingValue(fieldSetting);
-      return settingString === 'true';
-   }
+    public getSettingValueAsString(fieldSetting: FieldSetting): string {
+        const setting = this.getSetting(fieldSetting);
+        return setting != null ? setting.value : '';
+    }
 
-   public getSetting(fieldSetting: FieldSetting): FieldSettingKeyValue {
-      if (this.Setting !== undefined) {
-         const setting: FieldSettingKeyValue = this.Setting.filter(s => s.title === fieldSetting.name).shift();
-         if (setting !== undefined) {
-            return setting;
-         }
-      }
-      return null;
-   }
+    public getSettingValueAsBoolean(fieldSetting: FieldSetting): boolean {
+        const settingString = this.getSettingValue(fieldSetting);
+        return settingString === 'true';
+    }
 
-   public setSettingValue(fieldSetting: FieldSetting, value) {
+    public getSetting(fieldSetting: FieldSetting): FieldSettingKeyValue {
+        if (this.Setting !== undefined) {
+            const setting: FieldSettingKeyValue = this.Setting.filter((s) => s.title === fieldSetting.name).shift();
+            if (setting !== undefined) {
+                return setting;
+            }
+        }
+        return null;
+    }
 
-      /*if (settingName === 'value') {
+    public setSettingValue(fieldSetting: FieldSetting, value) {
+        /*if (settingName === 'value') {
          this.Value = value;
          return;
       }*/
 
-      if (this.Setting === undefined) {
-         this.Setting = [];
-      }
-      if (typeof value === 'boolean') {
-         value = (value) ? 'true' : 'false';
-      }
+        if (this.Setting === undefined) {
+            this.Setting = [];
+        }
+        if (typeof value === 'boolean') {
+            value = value ? 'true' : 'false';
+        }
 
-      const setting  = this.getSetting(fieldSetting);
-      if (setting == null) {
-         this.Setting.push(new FieldSettingKeyValue(fieldSetting.name, value));
-      } else {
-         setting.value = value;
-      }
-   }
+        const setting = this.getSetting(fieldSetting);
+        if (setting == null) {
+            this.Setting.push(new FieldSettingKeyValue(fieldSetting.name, value));
+        } else {
+            setting.value = value;
+        }
+    }
 
-   public isDateOrTimeTextType(): boolean {
-      if (this.Type === FieldType.TextField) {
-         return (
-            [TextType.Date, TextType.DateTime, TextType.Time]
-            .indexOf(this.textType) >= 0);
-      }
-      return false;
-   }
+    public isDateOrTimeTextType(): boolean {
+        if (this.Type === FieldType.TextField) {
+            return [TextType.Date, TextType.DateTime, TextType.Time].indexOf(this.textType) >= 0;
+        }
+        return false;
+    }
 
-   public isDateTextType(): boolean {
-      return (this.textType === TextType.Date);
-   }
+    public isDateTextType(): boolean {
+        return this.textType === TextType.Date;
+    }
 
-   public isTimeTextType(): boolean {
-      return (this.textType === TextType.Time);
-   }
+    public isTimeTextType(): boolean {
+        return this.textType === TextType.Time;
+    }
 
-   public isDateTimeTextType(): boolean {
-      return (this.textType === TextType.DateTime);
-   }
+    public isDateTimeTextType(): boolean {
+        return this.textType === TextType.DateTime;
+    }
 
-   public isRelationFieldMappingField(): boolean {
-      if (this.Type === FieldType.RelationField) {
-         if (this.getSettingValue(FieldSettings.RelationType) === FieldSettingValues.FieldMapping) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   public isRelationHasManyField(): boolean {
-      if (this.Type === FieldType.RelationField) {
-         if (this.getSettingValue(FieldSettings.RelationType) === FieldSettingValues.HasMany) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   public formatValueForViewing(rawValue: any): string {
-
-      if (rawValue === '') { return rawValue; }
-
-      // TextField - check for special cases
-      if (this.Type === FieldType.TextField.toString()) {
-         /*if (this.isDateOrTimeTextType()) {
-            if (this.isDateTextType()) {
-               return new Date(rawValue).toLocaleDateString();
+    public isRelationFieldMappingField(): boolean {
+        if (this.Type === FieldType.RelationField) {
+            if (this.getSettingValue(FieldSettings.RelationType) === FieldSettingValues.FieldMapping) {
+                return true;
             }
-            if (this.isTimeTextType() && (rawValue) && (rawValue.length > 8)) {
-               return new Date(rawValue).toLocaleTimeString();
+        }
+        return false;
+    }
+
+    public isRelationHasManyField(): boolean {
+        if (this.Type === FieldType.RelationField) {
+            if (this.getSettingValue(FieldSettings.RelationType) === FieldSettingValues.HasMany) {
+                return true;
             }
-            if (this.isDateTimeTextType()) {
-               const date = new Date(rawValue);
-               return  date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+        return false;
+    }
+
+    public formatValueForViewing(rawValue: any): string {
+        if (rawValue === '') {
+            return rawValue;
+        }
+
+        // TextField - check for special cases
+        if (this.Type === FieldType.TextField.toString()) {
+            if (this.isDateOrTimeTextType()) {
+                const dateFormat = this.dateFormat
+                    ? this.dateTimeFormatService.php2jsFormatStringForDateFsn(this.dateFormat)
+                    : 'dd.MM.yyyy';
+
+                if (this.isDateTextType()) {
+                    const date = new Date(rawValue);
+                    return format(date, dateFormat);
+                }
+
+                if (this.isTimeTextType() && !isEmpty(rawValue)) {
+                    return this.dateTimeFormatService.formatTimeValue(rawValue, this.is12HourFormat, this.showSeconds);
+                }
+
+                if (this.isDateTimeTextType()) {
+                    const date = new Date(rawValue);
+                    const timeFormat = this.dateTimeFormatService.timeFormatStringForDateFsn(
+                        this.is12HourFormat,
+                        this.showSeconds
+                    );
+                    return format(date, dateFormat) + ' ' + format(date, timeFormat);
+                }
             }
-         }*/
-      }
+        }
 
-      // UploadField
-      if (this.Type === FieldType.UploadField.toString()) {
-         return rawValue;
-      }
+        // UploadField
+        if (this.Type === FieldType.UploadField.toString()) {
+            return rawValue;
+        }
 
-      // any object value
-      if (isObject(rawValue)) {
-         let value = '';
-         Object.keys(rawValue).forEach((key, index) => {
-            value += rawValue[key];
-            if (index < Object.keys(rawValue).length - 1) {
-               value += ', ';
-            }
-         });
-         return value;
-      }
+        // any object value
+        if (isObject(rawValue)) {
+            let value = '';
+            Object.keys(rawValue).forEach((key, index) => {
+                value += rawValue[key];
+                if (index < Object.keys(rawValue).length - 1) {
+                    value += ', ';
+                }
+            });
+            return value;
+        }
 
-      return rawValue;
-   }
+        return rawValue;
+    }
 
-   private settingToBoolean(fieldSetting: FieldSetting) {
-      const value = this.getSettingValue(fieldSetting);
-      return (value === 'true');
-   }
+    private settingToBoolean(fieldSetting: FieldSetting) {
+        const value = this.getSettingValue(fieldSetting);
+        return value === 'true';
+    }
 }

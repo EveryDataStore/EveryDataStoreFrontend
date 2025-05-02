@@ -1,6 +1,6 @@
-import { FieldSettings } from '../field-settings/field-setting';
-import { FormMetaField } from '../entities/form-meta-field';
-import { FieldType } from '../field-type';
+import {FieldSettings} from '../field-settings/field-setting';
+import {FormMetaField} from '../entities/form-meta-field';
+import {FieldType} from '../field-type';
 
 export class DropdownField extends FormMetaField {
     constructor() {
@@ -13,8 +13,10 @@ export class DropdownField extends FormMetaField {
             FieldSettings.Info,
             FieldSettings.Active,
             FieldSettings.ShowInResultList,
+            FieldSettings.ShowInSearchFilter,
             FieldSettings.Required,
             FieldSettings.MultipleSelect,
-            FieldSettings.Options]);
+            FieldSettings.Options,
+        ]);
     }
 }

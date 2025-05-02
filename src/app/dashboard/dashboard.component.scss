@@ -127,6 +127,10 @@ position: relative;
     text-align: center;
 }
 
+:host::ng-deep .w-featured-infoBox .p-card-content:hover{
+    cursor: pointer;
+}
+
 :host::ng-deep .w-last-login .p-card-title, :host::ng-deep .w-last-login .p-card-content{
     width: 100%;
 }
@@ -170,4 +174,25 @@ position: relative;
     padding: 3px;
     line-height: 1;
     font-size: 13px;
+}
+
+.container-check-in-out-button{
+    width: 100% !important;
+    display: block;
+    background-color: green;
+}
+
+.container-check-in-out-button .p-button{
+    width: 100% !important;
+     text-align: center;
+     padding-top: 10px;
+     padding-bottom: 10px;
+     font-size: 16px;
+     font-weight: bold;
+}
+
+
+.container-clock h3{
+    text-align: center;
+    margin-bottom: 15px;
 }

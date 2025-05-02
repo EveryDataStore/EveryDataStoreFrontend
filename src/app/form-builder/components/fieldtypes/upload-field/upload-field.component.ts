@@ -46,13 +46,9 @@ export class UploadFieldComponent extends BaseFieldComponent implements OnInit {
 
   ngOnInit() {
     super.ngOnInit();
-   /*
     if(FieldSettings.UploadAccepts.options.length == 0){
          FieldSettings.UploadAccepts.options = this.settingsService.getUploadAllowedExtensions();
     }
-    console.log(this.settingsService.getUploadAllowedExtensions());
-    console.log(FieldSettings.UploadAccepts.options);
-    */
     this.formMetaField.setSettingValue(FieldSettings.UploadMaxFile, this.settingsService.getUploadAllowedFileNumber());
 
     this.uploadCheckAcceptValue();

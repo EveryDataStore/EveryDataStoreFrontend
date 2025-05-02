@@ -1,1 +1,9 @@
-<div *ngIf="field" class="field-label">{{field.label | translate }} <i *ngIf="field.info" class="pi pi-info-circle" style="vertical-align: middle;" [pTooltip]="field.info"></i></div>
+@if (field().label && field().type !== fieldType.UploadField
+&& field().type !== fieldType.CheckboxField
+&& field().type !== fieldType.HiddenField
+&& !field().getSettingValueAsBoolean(FieldSettings.Hidden)
+|| inBuildMode() || !checkForVisibility()) {
+    <div class="field-label">
+        {{field().label | translate }} <i *ngIf="field().info" class="pi pi-info-circle" style="vertical-align: middle;" [pTooltip]="field().info"></i>
+    </div>
+}

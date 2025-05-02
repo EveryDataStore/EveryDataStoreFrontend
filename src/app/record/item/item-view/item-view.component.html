@@ -15,8 +15,14 @@
                     </ul>
                     </div>
                     
+                    <!-- Color field-->
+                    <div *ngIf="row.settingType === 'color'" class="">
+                     <div class="color-field" [ngStyle]="{'width':'100px', 'display':'block','padding':'5px', 'color':'#fff', 'background-color': row.value}"> {{row.value}}</div>
+
+                    </div>
+                    
                     <!-- Normal value-->
-                    <span *ngIf="row.type !== 'uploadfield'">{{row.value}}</span>
+                    <span *ngIf="row.type !== 'uploadfield' && row.settingType !== 'color'">{{row.value}} </span>
                 </td>   
             </tr>
         </ng-container>

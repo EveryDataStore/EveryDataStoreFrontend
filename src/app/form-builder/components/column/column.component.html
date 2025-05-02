@@ -55,14 +55,8 @@
 <!-- template for showing the field -->
 <ng-template #fieldTemplate let-field="field">
   <div class="field" [class.hidden]="!inBuildMode && (field.type === fieldType.HiddenField)">
-    <ng-container *ngIf="field.label
-                && field.type !== fieldType.UploadField
-                && field.type !== fieldType.CheckboxField
-                && field.type !== fieldType.HiddenField
-                && !field.getSettingValueAsBoolean('hidden')
-                || inBuildMode">
-      <app-field-label [field]="field"></app-field-label>
-    </ng-container>
+
+    <app-field-label [field]="field" [formMode]="formMode"></app-field-label>
 
     <ng-container [ngSwitch]="field.type">
       <app-text-field   *ngSwitchCase="fieldType.TextField"

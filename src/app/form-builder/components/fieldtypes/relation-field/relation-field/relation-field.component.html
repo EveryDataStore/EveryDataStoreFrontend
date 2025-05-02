@@ -23,7 +23,7 @@
   <p-button icon="pi pi-search-plus" (onClick)="onShowSelectDialogClicked()" class="show-dialog-btn"></p-button>
 
   <p-dialog [header]="'please-choose' | translate" [(visible)]="showDialog" [styleClass]="'item-select-dialog'"
-            [modal]="true">
+            [modal]="true" [appendTo]="'body'">
     <div style="min-height: 500px;">
       <app-items-table #itemsTable
                        [hasDeleteButtons]="false"

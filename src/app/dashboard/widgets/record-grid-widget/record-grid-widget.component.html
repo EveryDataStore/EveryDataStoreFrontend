@@ -1,0 +1,21 @@
+<p-card  class="w-record-box modal-table">
+    <ng-template pTemplate="header">
+        <div class="p-card-title ng-star-inserted">
+            {{ widget().Title }}
+            <div class="header-buttons">
+                <a  pButton class="p-button-primary  p-card-left-btn " icon="pi pi-plus-circle"  (click)="widgetService.onNewRecordItemClicked(widget())"></a>
+                <a  pButton class="p-button-secondary  p-card-right-btn " icon="pi pi-search" (click)="widgetService.onSearchRecordClicked(widget())"></a>
+                </div>
+        </div>
+    </ng-template>
+    <p-table [value]="widget().WidgetData.Items" selectionMode="single">
+        <ng-template pTemplate="body" let-product>
+            <tr [pSelectableRow]="product"  (click)="widgetService.onRecordGridRowClicked(product.Slug)">
+                <td *ngIf="product.ItemData[0] && product.ItemData[0].Type != 'UploadField'">{{product.ItemData[0].Value}}</td>
+                <td *ngIf="product.ItemData[0] && product.ItemData[0].Type == 'UploadField'">bild</td>
+                <td *ngIf="product.ItemData[1] && product.ItemData[1].Type != 'UploadField'">{{product.ItemData[1].Value}}</td>
+                <td *ngIf="product.ItemData[1] && product.ItemData[1].Type == 'UploadField'">bild</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>

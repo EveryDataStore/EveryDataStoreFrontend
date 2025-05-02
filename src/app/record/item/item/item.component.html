@@ -145,6 +145,7 @@
               [disabled]="!(permissions.canEdit || permissions.canCreate)"
               [showCopyButton]="true"
               (save)="onSaveRecordItemClicked($event)"
+              [showDeleteButton]="!isNewItem && permissions.canDelete && !isQuickAddForm"
               (cancel)="onCancelClicked()"></app-save-cancel-buttons>
 
           </ng-container>

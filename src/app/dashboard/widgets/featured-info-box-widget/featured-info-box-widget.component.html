@@ -1,0 +1,10 @@
+<p-card class="w-featured-infoBox modal-table">
+    <ng-template pTemplate="header">
+        <div class="p-card-title ng-star-inserted center">
+            {{ widget().Title }}
+        </div>
+    </ng-template>
+    <h4 (click)="widgetService.onRecordGridRowClicked(widget().WidgetData.Slug)">{{widget().WidgetData.Title}}</h4>
+    
+</p-card>
+
