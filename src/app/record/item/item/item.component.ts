@@ -322,7 +322,6 @@ export class ItemComponent implements OnInit, AfterContentChecked, OnDestroy {
                 recordSlug: this.recordSlug
             });
         }
-        alert("DONE");
         this.busyService.hide();
         this.messageService.showSuccess(this.translateService.instant('item-deleted'));
       }

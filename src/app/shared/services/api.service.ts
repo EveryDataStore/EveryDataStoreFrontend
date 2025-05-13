@@ -408,7 +408,7 @@ export class ApiService extends RestClient {
             return recordItems;
         });
     }
-    
+
     @Path('custom/CustomCalendar/getRecordItems/:recordSlug')
     public getCalendarItems(getRecordItemsParams: GetRecordItemsParams): Promise<RecordItems> {
         const params = {...defaultGetRecordItemsParams, ...getRecordItemsParams};
@@ -422,8 +422,8 @@ export class ApiService extends RestClient {
             return recordItems;
         });
     }
-    
-    @Path('custom/CustomCalendar/cacheCalender/:recordSlug')
+
+    @Path('custom/CustomCalendar/cacheCalendar/:recordSlug')
     public cacheCalendar(getRecordItemsParams: GetRecordItemsParams): Promise<RecordItems> {
         const params = {...defaultGetRecordItemsParams, ...getRecordItemsParams};
         if (isNil(params.recordSlug)) {
@@ -436,7 +436,7 @@ export class ApiService extends RestClient {
             return recordItems;
         });
     }
-    
+
     @Path('RecordItem')
     public getRecordItemsFromList(
         recordSlug: string,
