@@ -317,7 +317,6 @@ export class ItemComponent implements OnInit, AfterContentChecked, OnDestroy {
         await this.apiService.deleteRecordItem(this.recordItemSlug);
         await this.routingService.toRecordItemsList(this.recordSlug, this.getListpage());
         if(this.isCalendarRecordSet){
-        alert(11111);
             this.apiService.cacheCalendar({
                 recordSlug: this.recordSlug
             });

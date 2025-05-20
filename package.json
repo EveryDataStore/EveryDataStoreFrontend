@@ -1,6 +1,27 @@
 {
-  "name": "ng-dms-frontend",
-  "version": "0.0.0",
+  "name": "@everydatastore/everydatastore-frontend",
+  "version": "1.5.2",
+  "description": "The EveryDataStore Frontend is a low-code enterprise content management (ECM) tool designed for building powerful, structured, and collaborative data applications with minimal coding effort",
+  "author": "EveryDataStore GmbH",
+  "homepage": "https://everydatastore.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EveryDataStore/EveryDataStoreFrontend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EveryDataStore/EveryDataStoreFrontend/issues"
+  },
+  "keywords": [
+    "enterprise content management",
+    "content management tool",
+    "content management software",
+    "ecm",
+    "cms",
+    "agular ecm",
+    "agular cms",
+    "frontend",
+    "rest api"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,7 +30,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
-  "private": true,
+  "private": false,
   "dependencies": {
     "@angular-builders/custom-webpack": "^17.0.1",
     "@angular/animations": "^17.3.11",

@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/restful/',
+  apiUrl: 'http://localhost:8585/restful/',
   debugQueryParams: [{name: 'XDEBUG_SESSION_START', value: 'PHPSTORM'}]
 };
 

@@ -7,9 +7,9 @@ import { localEnvironmentSettings } from './environment.local';
 
 export const environmentDev: EnvironmentSettings = {
   production: false,
-  apiUrl: 'http://localhost:4200/restful/',
+  apiUrl: 'http://localhost:8585/restful/',
   debugQueryParams: [{name: 'XDEBUG_SESSION_START', value: 'PHPSTORM'}],
-  itemsPerPage: 12,
+  itemsPerPage: 10,
   demoMode: false
 };
 

@@ -2,6 +2,6 @@ import { EnvironmentSettings } from './environment-settings';
 
 export const environment: EnvironmentSettings = {
   production: true,
-   apiUrl: 'https://your-backend-url.everydatastore.org/restful/',
-   demoMode: false
+  apiUrl: 'http://localhost:8585/restful/',
+  demoMode: false
 };
